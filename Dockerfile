@@ -10,7 +10,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
-    MODEL_PATH=/app/models/cat_dog_cnn.pt
+    MODEL_PATH=/app/models/cat_dog_cnn.pt \
+    FEEDBACK_PATH=/app/runtime/feedback.csv
 
 WORKDIR /app
 

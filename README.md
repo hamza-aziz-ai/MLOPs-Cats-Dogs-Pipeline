@@ -240,8 +240,8 @@ Other limitations include dataset bias, the closed two-class assumption, lack of
 
 ## Submission documents
 
-- `SUBMISSION_REPORT.corrected.md` — academic narrative, architecture, results, and exact PDF M1–M5 evidence
-- `SUBMISSION_CHECKLIST.corrected.md` — verified items versus manual/live submission work
-- `VIDEO_DEMO_SCRIPT.corrected.md` — timestamped demonstration plan under five minutes
+- `SUBMISSION_REPORT.md` — academic narrative, architecture, results, and exact PDF M1–M5 evidence
+- `SUBMISSION_CHECKLIST.md` — verified items versus manual/live submission work
+- `VIDEO_DEMO_SCRIPT.md` — timestamped demonstration plan under five minutes
 
 Before submission, replace every bracketed placeholder and attach the screenshots listed in the checklist. Do not replace placeholders with invented URLs or evidence.

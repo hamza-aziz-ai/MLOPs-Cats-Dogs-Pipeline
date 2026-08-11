@@ -11,6 +11,7 @@ services:
     restart: unless-stopped
     environment:
       MODEL_PATH: /app/models/cat_dog_cnn.pt
+      FEEDBACK_PATH: /app/runtime/feedback.csv
       PYTHONUNBUFFERED: "1"
     ports:
       - "${API_PORT:-8000}:8000"

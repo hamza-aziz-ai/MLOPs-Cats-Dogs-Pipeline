@@ -21,7 +21,7 @@ Target duration: **4 minutes 40 seconds**, leaving a 10-second margin below five
 
 ## 0:20–0:55 — Exact PDF milestone mapping
 
-**Show:** corrected README M1–M5 table.
+**Show:** README M1–M5 table.
 
 **Say:**
 
@@ -76,7 +76,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 
 ## 3:38–4:08 — M5 final package
 
-**Show:** source/config/model ZIP contents, checksum, corrected report/checklist, and video filename/timeline.
+**Show:** source/config/model ZIP contents, checksum, report/checklist, and video filename/timeline.
 
 **Say:**
 
