@@ -1,0 +1,56 @@
+name: cats-dogs-mlops
+
+services:
+  api:
+    image: ${IMAGE:-cats-dogs-mlops-api:local}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VCS_REF: ${VCS_REF:-local}
+    restart: unless-stopped
+    environment:
+      MODEL_PATH: /app/models/cat_dog_cnn.pt
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "${API_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5).read()"
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 4
+    networks:
+      - mlops
+
+  prometheus:
+    image: cats-dogs-prometheus:${PROMETHEUS_IMAGE_TAG:-v2.54.1}
+    build:
+      context: ./monitoring
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    volumes:
+      - prometheus-data:/prometheus
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - mlops
+
+networks:
+  mlops:
+    driver: bridge
+
+volumes:
+  prometheus-data:

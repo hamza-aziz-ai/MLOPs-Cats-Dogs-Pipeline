@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.kaggle/
+
+# Runtime data
+runtime/*
+!runtime/.gitkeep
+logs/
+
+# Data is versioned by DVC, not Git
+/data/raw/
+/data/processed/
+/data/.cache/
+
+# MLflow local database and transient artifacts
+mlflow.db
+mlartifacts/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# Build outputs
+build/
+dist/
+*.zip
+

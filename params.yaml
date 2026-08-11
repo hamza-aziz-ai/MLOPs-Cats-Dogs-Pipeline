@@ -1,0 +1,23 @@
+data:
+  dataset_handle: tongpython/cat-and-dog
+  raw_dir: data/raw
+  processed_dir: data/processed
+  image_size: 224
+  train_ratio: 0.80
+  validation_ratio: 0.10
+  test_ratio: 0.10
+  max_images_per_class: 1000
+  seed: 42
+
+training:
+  batch_size: 32
+  epochs: 5
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  num_workers: 0
+  model_version: 1.0.0
+
+tracking:
+  uri: file:./mlruns
+  experiment_name: cats-vs-dogs-baseline
+

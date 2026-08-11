@@ -1,0 +1,47 @@
+{
+  "test_accuracy": 0.595,
+  "test_precision_weighted": 0.6283957291525881,
+  "test_recall_weighted": 0.595,
+  "test_f1_weighted": 0.5668333377897804,
+  "training_duration_seconds": 304.86833560000014,
+  "model_version": "1.0.0",
+  "model_sha256": "da70dbd561c481de897fc11b20c8d07d776aafa343074cacc27a9b421116f4af",
+  "mlflow_run_id": "4045b2ae755640799354dab50621441b",
+  "class_names": [
+    "cats",
+    "dogs"
+  ],
+  "image_size": 224,
+  "device": "cpu",
+  "git_commit": "unavailable",
+  "history": {
+    "train_loss": [
+      0.6880259919166565,
+      0.6555798602104187,
+      0.6422684991359711,
+      0.6495937281847,
+      0.6270890307426452
+    ],
+    "train_accuracy": [
+      0.57125,
+      0.610625,
+      0.616875,
+      0.6075,
+      0.65
+    ],
+    "validation_loss": [
+      0.657805438041687,
+      0.7787950336933136,
+      0.6380245208740234,
+      0.6552237820625305,
+      0.6872545886039734
+    ],
+    "validation_accuracy": [
+      0.615,
+      0.605,
+      0.595,
+      0.65,
+      0.57
+    ]
+  }
+}
