@@ -1,47 +1,47 @@
 {
-  "test_accuracy": 0.595,
-  "test_precision_weighted": 0.6283957291525881,
-  "test_recall_weighted": 0.595,
-  "test_f1_weighted": 0.5668333377897804,
-  "training_duration_seconds": 304.86833560000014,
+  "test_accuracy": 0.62,
+  "test_precision_weighted": 0.6428571428571429,
+  "test_recall_weighted": 0.62,
+  "test_f1_weighted": 0.6041666666666666,
+  "training_duration_seconds": 65.37139800000296,
   "model_version": "1.0.0",
-  "model_sha256": "da70dbd561c481de897fc11b20c8d07d776aafa343074cacc27a9b421116f4af",
-  "mlflow_run_id": "4045b2ae755640799354dab50621441b",
+  "model_sha256": "8070fc046c4e247d30fa0ec469cd2fd22c1205070c9ddde4121ba540bcc0a793",
+  "mlflow_run_id": "ee54aa79d62b41c9a1104dc9103c562a",
   "class_names": [
     "cats",
     "dogs"
   ],
   "image_size": 224,
-  "device": "cpu",
-  "git_commit": "unavailable",
+  "device": "cuda",
+  "git_commit": "bc52b5fc9b19fad982244250569c17660926118d",
   "history": {
     "train_loss": [
-      0.6880259919166565,
-      0.6555798602104187,
-      0.6422684991359711,
-      0.6495937281847,
-      0.6270890307426452
+      0.7033567643165588,
+      0.6726362085342408,
+      0.6621393227577209,
+      0.67357994556427,
+      0.6569902312755584
     ],
     "train_accuracy": [
-      0.57125,
-      0.610625,
-      0.616875,
-      0.6075,
-      0.65
+      0.54,
+      0.5825,
+      0.591875,
+      0.585,
+      0.6075
     ],
     "validation_loss": [
-      0.657805438041687,
-      0.7787950336933136,
-      0.6380245208740234,
-      0.6552237820625305,
-      0.6872545886039734
+      0.6473185229301452,
+      0.6615124368667602,
+      0.6445665764808655,
+      0.6545441114902496,
+      0.6369570851325989
     ],
     "validation_accuracy": [
-      0.615,
-      0.605,
-      0.595,
-      0.65,
-      0.57
+      0.635,
+      0.57,
+      0.585,
+      0.585,
+      0.585
     ]
   }
 }

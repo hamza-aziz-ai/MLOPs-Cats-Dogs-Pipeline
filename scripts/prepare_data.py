@@ -55,6 +55,35 @@ def discover_class_images(raw_dir: Path, class_name: str) -> list[Path]:
     return sorted(set(candidates), key=lambda path: str(path).lower())
 
 
+def _deduplicate_by_content(paths: list[Path]) -> list[Path]:
+    """Drop paths whose raw bytes duplicate an earlier path's content.
+
+    The Kaggle Cats vs Dogs dataset ships the same photo under different
+    filenames across its mirrored folder layouts. ``discover_class_images``
+    only dedupes by path, so a duplicate can be shuffled into a different
+    split than its twin — leaking test/validation answers into training.
+    Hashing raw bytes here, before splitting, keeps every surviving image
+    content-unique so no split can share an image with another.
+
+    Args:
+        paths: Candidate image paths, already deduped by path.
+
+    Returns:
+        list[Path]: ``paths`` with byte-identical duplicates removed,
+        keeping the first occurrence of each content hash.
+    """
+
+    seen_hashes: set[str] = set()
+    unique_paths: list[Path] = []
+    for path in paths:
+        digest = _sha256_file(path)
+        if digest in seen_hashes:
+            continue
+        seen_hashes.add(digest)
+        unique_paths.append(path)
+    return unique_paths
+
+
 def split_paths(
     paths: list[Path],
     *,
@@ -180,12 +209,17 @@ def prepare_dataset(
     _prepare_output_directory(output_dir, overwrite)
     manifest_rows: list[dict[str, str | int]] = []
     skipped_files: list[str] = []
+    duplicate_content_images_dropped = 0
     split_counts: Counter[str] = Counter()
 
     for class_index, class_name in enumerate(("cats", "dogs")):
         candidates = discover_class_images(raw_dir, class_name)
         if not candidates:
             raise ValueError(f"No '{class_name}' images discovered below {raw_dir}")
+
+        deduplicated_candidates = _deduplicate_by_content(candidates)
+        duplicate_content_images_dropped += len(candidates) - len(deduplicated_candidates)
+        candidates = deduplicated_candidates
 
         # Shuffle before capping so the subset is representative and reproducible.
         random.Random(seed + class_index).shuffle(candidates)
@@ -260,6 +294,7 @@ def prepare_dataset(
         "max_images_per_class": max_images_per_class,
         "processed_images": len(manifest_rows),
         "skipped_images": len(skipped_files),
+        "duplicate_content_images_dropped": duplicate_content_images_dropped,
         "split_counts": dict(sorted(split_counts.items())),
         "skipped_relative_paths": skipped_files,
     }

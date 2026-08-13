@@ -7,17 +7,17 @@ name = "cats-dogs-mlops"
 version = "1.0.0"
 description = "End-to-end MLOps pipeline for Cats vs Dogs binary image classification"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.15"
 authors = [{ name = "BITS Pilani WILP AIML Student" }]
 dependencies = [
-  "fastapi==0.115.0",
-  "numpy==1.26.4",
-  "pillow==10.4.0",
-  "prometheus-client==0.21.0",
-  "python-multipart==0.0.12",
-  "torch==2.4.1",
-  "torchvision==0.19.1",
-  "uvicorn[standard]==0.30.6",
+  "fastapi",
+  "numpy",
+  "pillow",
+  "prometheus-client",
+  "python-multipart",
+  "torch",
+  "torchvision",
+  "uvicorn[standard]",
 ]
 
 [tool.setuptools]
@@ -28,7 +28,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers"
-pythonpath = ["src"]
+pythonpath = ["src", "scripts"]
 testpaths = ["tests"]
 
 [tool.coverage.run]

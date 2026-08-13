@@ -143,6 +143,12 @@ cells = [
         import yaml
         from PIL import Image
 
+        # MLflow >=3.x refuses the filesystem tracking backend ("file:./mlruns")
+        # by default now that it's in maintenance mode upstream. This project's
+        # run history and submitted evidence are tied to that file-based
+        # mlruns/ directory, so opt back in rather than migrating backends.
+        os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+
         print(f"Python: {sys.version.split()[0]}")
         print(f"PyTorch: {torch.__version__}")
         print(f"MLflow: {mlflow.__version__}")

@@ -37,6 +37,13 @@ from cats_dogs_mlops.preprocessing import (
     build_training_transform,
 )
 
+# MLflow >=3.x refuses the filesystem tracking backend ("file:./mlruns") by
+# default now that it's in maintenance mode upstream. This project's existing
+# run history and submitted evidence (SUBMISSION_REPORT.md, VIDEO_DEMO_SCRIPT.md)
+# are tied to that file-based mlruns/ directory, so opt back in rather than
+# migrating backends.
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+
 
 def seed_everything(seed: int) -> None:
     """Seed Python, NumPy, and PyTorch for reproducible experiments.

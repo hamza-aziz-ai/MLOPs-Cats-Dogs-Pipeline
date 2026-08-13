@@ -30,8 +30,8 @@ stages:
       nfiles: 10033
     - path: scripts/prepare_data.py
       hash: md5
-      md5: b3c99b9902b358e5c61ba05669d7cf9c
-      size: 11334
+      md5: 32934779b7699c90eb4d84f2195ea22e
+      size: 12730
     - path: src/cats_dogs_mlops/preprocessing.py
       hash: md5
       md5: 6d386544d7a200d01aa56dcc2d49fd87
@@ -47,8 +47,8 @@ stages:
     outs:
     - path: data/processed
       hash: md5
-      md5: 3b0dac87f2a6d3f8f8d26483ac66aa82.dir
-      size: 31252920
+      md5: cc8c1db7e9c86417ebb6f4dc266d8686.dir
+      size: 30935892
       nfiles: 2002
   train:
     cmd: python scripts/train.py --data-dir data/processed --model-path 

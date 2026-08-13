@@ -1,9 +1,8 @@
-fastapi==0.115.0
-numpy==1.26.4
-pillow==10.4.0
-prometheus-client==0.21.0
-python-multipart==0.0.12
-torch==2.4.1
-torchvision==0.19.1
-uvicorn[standard]==0.30.6
-
+fastapi~=0.141.1
+numpy~=2.5.2
+pillow~=12.3.0
+prometheus-client~=0.26.0
+python-multipart~=0.0.32
+torch~=2.13.0+cu132
+torchvision~=0.28.0+cu132
+uvicorn~=0.52.1
