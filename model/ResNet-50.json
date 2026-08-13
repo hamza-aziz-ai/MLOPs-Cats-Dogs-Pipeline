@@ -1,0 +1,9 @@
+{
+  "architecture": "ResNet50",
+  "num_classes": 2,
+  "classes": [
+    "cats",
+    "dogs"
+  ],
+  "image_size": 224
+}

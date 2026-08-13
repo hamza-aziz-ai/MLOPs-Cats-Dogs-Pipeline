@@ -40,6 +40,12 @@ desktop.ini
 .idea/
 .vscode/
 
+# Agent tooling configuration and generated output (not part of the submission)
+.claude/
+.codex/
+.serena/
+graphify-out/
+
 # Build outputs
 build/
 dist/
