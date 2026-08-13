@@ -10,7 +10,7 @@ import subprocess
 import time
 from collections.abc import Sized
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 import matplotlib
 
@@ -178,6 +178,15 @@ def run_epoch(
     return accumulated_loss / sample_count, correct_predictions / sample_count
 
 
+def _dataset_size(data_loader: DataLoader[Any]) -> int:
+    """Return the number of samples in a loader backed by a sized dataset."""
+
+    dataset = data_loader.dataset
+    if not isinstance(dataset, Sized):
+        raise TypeError("Training data loaders must use datasets with a defined length")
+    return len(dataset)
+
+
 @torch.inference_mode()
 def collect_predictions(
     model: nn.Module,
@@ -320,9 +329,9 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
                 "seed": arguments.seed,
                 "device": str(device),
                 "class_names": ",".join(class_names),
-                "train_samples": len(cast(Sized, loaders["train"].dataset)),
-                "validation_samples": len(cast(Sized, loaders["validation"].dataset)),
-                "test_samples": len(cast(Sized, loaders["test"].dataset)),
+                "train_samples": _dataset_size(loaders["train"]),
+                "validation_samples": _dataset_size(loaders["validation"]),
+                "test_samples": _dataset_size(loaders["test"]),
                 "git_commit": git_commit_or_unknown(),
             }
         )

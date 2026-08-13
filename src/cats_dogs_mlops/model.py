@@ -16,6 +16,23 @@ from cats_dogs_mlops.config import CLASS_NAMES, IMAGE_SIZE
 _FLATTENED_FEATURES = 4 * 4 * 2048
 
 
+def _forward_bottleneck_path(
+    inputs: torch.Tensor,
+    conv1: nn.Conv2d,
+    bn1: nn.BatchNorm2d,
+    conv2: nn.Conv2d,
+    bn2: nn.BatchNorm2d,
+    conv3: nn.Conv2d,
+    bn3: nn.BatchNorm2d,
+    relu: nn.ReLU,
+) -> torch.Tensor:
+    """Apply the shared three-layer path of a ResNet bottleneck block."""
+
+    outputs = relu(bn1(conv1(inputs)))
+    outputs = relu(bn2(conv2(outputs)))
+    return bn3(conv3(outputs))
+
+
 class _IdentityBlock(nn.Module):
     """ResNet identity block: 3-layer skip connection with no dimension change.
 
@@ -46,11 +63,9 @@ class _IdentityBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         shortcut = x
-
-        out = self.relu(self.bn1(self.conv1(x)))
-        out = self.relu(self.bn2(self.conv2(out)))
-        out = self.bn3(self.conv3(out))
-
+        out = _forward_bottleneck_path(
+            x, self.conv1, self.bn1, self.conv2, self.bn2, self.conv3, self.bn3, self.relu
+        )
         out = out + shortcut
         return self.relu(out)
 
@@ -58,7 +73,7 @@ class _IdentityBlock(nn.Module):
 class _ConvolutionalBlock(nn.Module):
     """ResNet convolutional block: skip connection with a projection shortcut.
 
-    Used where the input and output dimensions differ, so a 1x1 strided
+    Used where the input and output dimensions differ, so a 1x1 stride-based
     convolution on the shortcut path resizes the input to match the main
     path before the final addition.
 
@@ -94,11 +109,9 @@ class _ConvolutionalBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         shortcut = self.shortcut_bn(self.shortcut_conv(x))
-
-        out = self.relu(self.bn1(self.conv1(x)))
-        out = self.relu(self.bn2(self.conv2(out)))
-        out = self.bn3(self.conv3(out))
-
+        out = _forward_bottleneck_path(
+            x, self.conv1, self.bn1, self.conv2, self.bn2, self.conv3, self.bn3, self.relu
+        )
         out = out + shortcut
         return self.relu(out)
 
@@ -186,7 +199,7 @@ class CatDogResNet50(nn.Module):
         )
 
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
-        """Compute unnormalised class scores for an image batch.
+        """Compute raw class scores for an image batch.
 
         Args:
             inputs: RGB float tensor shaped ``(batch, 3, height, width)``,

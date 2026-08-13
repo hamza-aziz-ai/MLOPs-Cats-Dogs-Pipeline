@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Sequence
+from typing import Sequence, TypedDict
 
 import torch
 from torch import nn
+
+
+class PredictionResult(TypedDict):
+    """Typed result returned by ``predict_tensor``."""
+
+    label: str
+    confidence: float
+    probabilities: dict[str, float]
 
 
 @torch.inference_mode()
@@ -14,7 +22,7 @@ def predict_tensor(
     input_batch: torch.Tensor,
     class_names: Sequence[str],
     device: torch.device | str = "cpu",
-) -> dict[str, object]:
+) -> PredictionResult:
     """Run inference and convert logits to a labelled probability response.
 
     For class logits ``z_i``, softmax computes
@@ -28,7 +36,7 @@ def predict_tensor(
         device: Device on which inference is executed.
 
     Returns:
-        dict[str, object]: Predicted label, confidence, and all class
+        PredictionResult: Predicted label, confidence, and all class
         probabilities for the first item in the batch.
 
     Raises:
@@ -61,4 +69,3 @@ def predict_tensor(
         "confidence": probabilities[class_names[predicted_index]],
         "probabilities": probabilities,
     }
-
