@@ -63,7 +63,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 
 **Say:**
 
-> M4 uses Docker Compose as the deployment target. The final local stack was verified with both the API and Prometheus containers healthy. Prometheus target `http://api:8000/metrics` reports up, and the post-deployment smoke passed. The remote workflow runs on the main branch on a trusted Linux x64 self-hosted runner, which pulls and deploys the image — here's the live deployment job at **[DEPLOYMENT JOB URL: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`]**, with both containers healthy and a real cat/dog prediction against the deployed instance.
+> M4 uses Docker Compose as the deployment target. The final local stack was verified with both the API and Prometheus containers healthy. Prometheus target `http://api:8000/metrics` reports up, and the post-deployment smoke passed. The remote workflow runs on the main branch on a trusted Linux x64 self-hosted runner, which pulls and deploys the image — here's the live deployment job at **[DEPLOYMENT JOB URL: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140`]**, with both containers healthy and a real cat/dog prediction against the deployed instance.
 
 ## 3:03–3:38 — M5 monitoring, logs, and feedback
 

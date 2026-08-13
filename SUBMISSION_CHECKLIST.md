@@ -61,10 +61,10 @@ PDF scope: **unit tests, GitHub Actions, Docker build, GHCR publishing**.
 - [x] Create/select GitHub repository: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline**.
 - [x] Push final commit. Tag pending confirmed semester (see Identity section).
 - [x] Confirm Actions permissions include `contents: read` and `packages: write`.
-- [x] Run M3 successfully: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647**.
+- [x] Run M3 successfully: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711**.
 - [x] Confirm all unit-test and image-build jobs are green.
 - [x] Confirm package exists in GHCR: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline**.
-- [x] Record immutable digest: **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`**.
+- [x] Record immutable digest: **`sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`**.
 - [x] Verify displayed digest matches the image intended for M4 deployment (same tag/digest pulled by the deploy job).
 - [x] Capture 8-passed/83%-coverage screenshot. (`docs/screenshots/E8_pytest_coverage.png`)
 - [x] Capture successful GitHub Actions test/build screenshot. (`docs/screenshots/E10_github_actions_run.png`)
@@ -86,8 +86,8 @@ PDF scope: **Docker Compose target; main-branch self-hosted Linux runner pulls/d
 - [x] Register the runner only to the trusted repository/organization (repo-scoped, not org-wide).
 - [x] Confirm runner labels match the workflow (`self-hosted`, `linux` — matches `runs-on: [self-hosted, linux]`).
 - [x] Confirm runner is online before the main-branch deployment.
-- [x] Complete remote pull/deploy/smoke: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227**.
-- [x] Confirm deployed image digest: **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`**.
+- [x] Complete remote pull/deploy/smoke: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140**.
+- [x] Confirm deployed image digest: **`sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`**.
 - [x] Verify remote Compose containers are healthy (`api` and `prometheus`, both `Up`/`healthy`).
 - [x] Verify remote `/health` and one cat/dog request (`/health` → `{"status":"ready","model_loaded":true}`; `/predict` on a real cat image → `{"label":"cats","confidence":0.582}`).
 - [x] Record endpoint/private-host note: **private host — student's own WSL2 Ubuntu self-hosted runner, `http://localhost:8000`, not publicly routable.**
@@ -202,9 +202,9 @@ docker compose down
 | Confirmed semester | S2-25 |
 | Final Git commit | **`896c4cd`** |
 | Release/tag | **`s2-25-aimlczg523-assignment2`** |
-| CI run | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647** |
-| GHCR digest | **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`** |
-| Deployment job | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227** |
+| CI run | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711** |
+| GHCR digest | **`sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`** |
+| Deployment job | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140** |
 | ZIP | **`cats-dogs-mlops-submission.zip`**, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 | Video | **[URL/FILENAME]** |
 | Submission time | **[DATE AND TIME WITH TIME ZONE]** |

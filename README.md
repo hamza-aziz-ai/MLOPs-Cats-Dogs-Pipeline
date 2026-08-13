@@ -15,8 +15,8 @@ End-to-end MLOps implementation for binary image classification, prepared for BI
 | Semester tag | S2-25 |
 | Problem statement | `Problem-Statement.pdf` in the Assignment-2 course folder |
 | GitHub repository | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline` |
-| GitHub Actions run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647` |
-| GHCR image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` |
+| GitHub Actions run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711` |
+| GHCR image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf` |
 | Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 
 ## What this repository delivers
@@ -205,10 +205,10 @@ For a real remote run:
 
 1. Push the final repository to GitHub. — done: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline`
 2. Confirm Actions permissions include `contents: read` and `packages: write`. — confirmed in `.github/workflows/ci-cd.yml`'s per-job `permissions` blocks.
-3. Run M3 and retain the CI run URL. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647`
-4. Verify GHCR and record the image URL plus immutable digest. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`
+3. Run M3 and retain the CI run URL. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711`
+4. Verify GHCR and record the image URL plus immutable digest. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`
 5. Configure the M4 job only on a trusted Linux x64 self-hosted runner with Docker and Docker Compose installed. — done: WSL2 Ubuntu 24.04, repo-scoped runner.
-6. Retain the deployment job URL and remote health/smoke evidence. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`; remote `/health` returned `{"status":"ready","model_loaded":true}`, remote `/predict` on a real cat image returned `{"label":"cats","confidence":0.582}`.
+6. Retain the deployment job URL and remote health/smoke evidence. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140`; remote `/health` returned `{"status":"ready","model_loaded":true}`, remote `/predict` on a real cat image returned `{"label":"cats","confidence":0.582}`.
 
 The M4 job needs a self-hosted Linux runner because Docker Compose must operate on the persistent target host. A GitHub-hosted runner is ephemeral and cannot be treated as that persistent deployment target. Never attach an untrusted self-hosted runner to a public repository or expose secrets in logs.
 

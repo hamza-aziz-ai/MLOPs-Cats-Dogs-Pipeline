@@ -11,8 +11,8 @@
 | Assignment | Assignment 2 |
 | Semester tag | S2-25 |
 | GitHub repository | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline` |
-| CI run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647` |
-| Container image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` |
+| CI run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711` |
+| Container image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf` |
 | Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 
 ## 1. Source and scope
@@ -192,9 +192,9 @@ Verified local evidence:
 The workflow defines automated quality gates and image creation/publication under its configured events and permissions. Live M3 evidence:
 
 - GitHub repository: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline`
-- Successful GitHub Actions run: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647`
+- Successful GitHub Actions run: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711`
 - GHCR image: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`
-- GHCR immutable digest: `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`
+- GHCR immutable digest: `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`
 - **[SCREENSHOT: TEST/BUILD/PUBLISH JOBS PASSING]**
 
 Coverage is a useful gate but not proof of correctness. Future tests should add corrupt input, load failure, concurrency, resource limits, and rollback behavior.
@@ -216,8 +216,8 @@ Live remote M4 evidence:
 
 - Self-hosted runner: WSL2 Ubuntu 24.04 (x86_64), registered to this repository only, labels `self-hosted`/`linux` matching the workflow's `runs-on`.
 - **[SELF-HOSTED RUNNER SCREENSHOT]**
-- Successful main-branch deployment job: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`
-- Deployed image digest: `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` (matches the M3 build)
+- Successful main-branch deployment job: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140`
+- Deployed image digest: `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf` (matches the M3 build)
 - Remote Compose status: `api` and `prometheus` both `Up`/`healthy`; Prometheus target `cats-dogs-api` reported `up`
 - Remote `/health`: `{"status":"ready","model_loaded":true,"model_version":"1.0.0"}`
 - Remote `/predict` (real cat image): `{"label":"cats","confidence":0.582,...}`
@@ -346,10 +346,10 @@ docker compose down
 - 2024AC05133
 - S2-25
 - `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline`
-- `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647`
+- `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711`
 - `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`
-- `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`
-- `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`
+- `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`
+- `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140`
 - `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`
 - **[VIDEO URL OR FILENAME]**
 - **[SCREENSHOT: DVC REPRO AND CLEAN STATUS]**
