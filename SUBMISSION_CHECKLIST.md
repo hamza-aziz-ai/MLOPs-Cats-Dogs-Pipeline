@@ -1,5 +1,7 @@
 # Assignment 2 Submission Checklist
 
+> **STALE EVIDENCE NOTICE:** the baseline model was swapped from a small custom CNN to a from-scratch ResNet-50 (`src/cats_dogs_mlops/model.py`, `CatDogResNet50`). Every metric, MLflow run ID, model SHA-256, GHCR digest, and screenshot below still reflects the retired CNN. Re-run `dvc repro`, rebuild/push the Docker image, redeploy, and rerun the post-deployment evaluation to regenerate real evidence before relying on any number in this file.
+
 Checked items are supported by verified local evidence. Unchecked items require student identity, instructor confirmation, live GitHub/GHCR/remote deployment evidence, final packaging, screenshots, or recording.
 
 ## M1 — Model Development & Experiment Tracking

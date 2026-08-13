@@ -10,7 +10,7 @@ services:
         VCS_REF: ${VCS_REF:-local}
     restart: unless-stopped
     environment:
-      MODEL_PATH: /app/models/cat_dog_cnn.pt
+      MODEL_PATH: /app/models/resnet50_baseline.pt
       FEEDBACK_PATH: /app/runtime/feedback.csv
       PYTHONUNBUFFERED: "1"
     ports:

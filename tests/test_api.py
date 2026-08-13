@@ -24,7 +24,7 @@ def _jpeg_upload() -> bytes:
 def api_client(tmp_path, monkeypatch) -> Iterator[TestClient]:
     """Start the API lifespan with an isolated, valid model checkpoint."""
     torch.manual_seed(7)
-    checkpoint_path = tmp_path / "cat_dog_cnn.pt"
+    checkpoint_path = tmp_path / "resnet50_baseline.pt"
     save_checkpoint(
         create_model(),
         checkpoint_path,

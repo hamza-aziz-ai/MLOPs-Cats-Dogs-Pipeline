@@ -1,5 +1,7 @@
 # Cats vs Dogs MLOps Pipeline
 
+> **STALE EVIDENCE NOTICE:** the baseline model was swapped from a small custom CNN to a from-scratch ResNet-50 (`src/cats_dogs_mlops/model.py`, `CatDogResNet50`). Every metric, MLflow run ID, model SHA-256, GHCR digest, and screenshot below still reflects the retired CNN. Re-run `dvc repro`, rebuild/push the Docker image, redeploy, and rerun the post-deployment evaluation to regenerate real evidence before relying on any number in this file.
+
 End-to-end MLOps implementation for binary image classification, prepared for BITS Pilani WILP M.Tech. AIML, course **AIMLCZG523**, Assignment 2.
 
 > **Semester label:** the requested course folder is `MLOps (S2-25_AIMLCZG523)`, while the header inside the supplied `Problem-Statement.pdf` says `S1-25`. Confirmed by the student as **S2-25**; used consistently below.
@@ -236,7 +238,7 @@ The baseline's test accuracy (`0.62`) and weighted F1 (`0.6041666667`) show that
 - compare per-class metrics, calibration, latency, and model size;
 - promote the new checkpoint only if it improves a predeclared acceptance gate.
 
-`notebooks/02_resnet50_from_scratch.ipynb` implements this repository's own from-scratch ResNet-50 (identity/convolutional blocks, all 5 stages) as a companion exploration, trained on this project's `data/processed` split. It is **not** the transfer-learning improvement above — it's randomly initialized, not pretrained — so it doesn't by itself solve the accuracy gap; genuine transfer learning with pretrained ImageNet weights remains the recommended next step.
+`notebooks/01_model_development.ipynb` implements `CatDogResNet50` from scratch (identity/convolutional blocks, all 5 stages) as the project's actual baseline model, trained on this project's `data/processed` split. It is randomly initialized, not pretrained on ImageNet — genuine transfer learning with pretrained weights remains the recommended next step, not this notebook itself.
 
 Other limitations include dataset bias, the closed two-class assumption, lack of out-of-distribution rejection, and aggregate metrics hiding class-specific errors.
 

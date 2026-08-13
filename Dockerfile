@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
-    MODEL_PATH=/app/models/cat_dog_cnn.pt \
+    MODEL_PATH=/app/models/resnet50_baseline.pt \
     FEEDBACK_PATH=/app/runtime/feedback.csv
 
 WORKDIR /app
@@ -34,7 +34,7 @@ RUN groupadd --system app \
     && chown app:app /app/runtime
 
 COPY --chown=app:app src/cats_dogs_mlops ./cats_dogs_mlops
-COPY --chown=app:app models/cat_dog_cnn.pt ./models/cat_dog_cnn.pt
+COPY --chown=app:app models/resnet50_baseline.pt ./models/resnet50_baseline.pt
 
 USER app
 

@@ -1,5 +1,7 @@
 # Assignment 2 Submission Report — End-to-End MLOps Pipeline
 
+> **STALE EVIDENCE NOTICE:** the baseline model was swapped from a small custom CNN to a from-scratch ResNet-50 (`src/cats_dogs_mlops/model.py`, `CatDogResNet50`). Every metric, MLflow run ID, model SHA-256, GHCR digest, and screenshot below still reflects the retired CNN. Re-run `dvc repro`, rebuild/push the Docker image, redeploy, and rerun the post-deployment evaluation to regenerate real evidence before relying on any number in this file.
+
 ## Cover information
 
 | Field | Submission value |
@@ -119,7 +121,7 @@ The notebook asserts the `(3, 224, 224)` tensor contract.
 
 ### 5.3 Baseline CNN and training
 
-Three convolutional blocks use convolution, batch normalization, ReLU, and max pooling. Adaptive average pooling, dropout, and a two-unit linear layer produce raw logits for cross-entropy loss.
+`CatDogResNet50` (`src/cats_dogs_mlops/model.py`) is a from-scratch ResNet-50: a 7x7 stem, then 5 bottleneck stages built from convolutional and identity blocks with skip connections (16 blocks total), average pooling, and a 3-layer fully-connected head to raw logits for cross-entropy loss. No pretrained weights — randomly initialised, per the PDF's "baseline CNN" scope.
 
 | Parameter | Value |
 |---|---:|

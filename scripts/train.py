@@ -310,7 +310,7 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
     with mlflow.start_run(run_name=f"baseline-cnn-{arguments.model_version}") as active_run:
         mlflow.log_params(
             {
-                "architecture": "CatDogCNN",
+                "architecture": "CatDogResNet50",
                 "image_size": arguments.image_size,
                 "batch_size": arguments.batch_size,
                 "epochs": arguments.epochs,
@@ -459,7 +459,7 @@ def parse_arguments() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=Path("data/processed"))
-    parser.add_argument("--model-path", type=Path, default=Path("models/cat_dog_cnn.pt"))
+    parser.add_argument("--model-path", type=Path, default=Path("models/resnet50_baseline.pt"))
     parser.add_argument(
         "--metrics-path",
         type=Path,

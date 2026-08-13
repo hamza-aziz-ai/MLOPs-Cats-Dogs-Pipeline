@@ -42,7 +42,7 @@ stages:
     cmd: >-
       python scripts/train.py
       --data-dir ${data.processed_dir}
-      --model-path models/cat_dog_cnn.pt
+      --model-path models/resnet50_baseline.pt
       --metrics-path metrics/training_metrics.json
       --artifacts-dir artifacts
       --epochs ${training.epochs}
@@ -64,7 +64,7 @@ stages:
       - tracking
       - data.seed
     outs:
-      - models/cat_dog_cnn.pt:
+      - models/resnet50_baseline.pt:
           cache: false
       - artifacts/confusion_matrix.png:
           cache: false

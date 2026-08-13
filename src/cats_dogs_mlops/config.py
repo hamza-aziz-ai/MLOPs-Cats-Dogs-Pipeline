@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "cat_dog_cnn.pt"
+DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "resnet50_baseline.pt"
 DEFAULT_FEEDBACK_PATH = PROJECT_ROOT / "runtime" / "feedback.csv"
 
 CLASS_NAMES: tuple[str, str] = ("cats", "dogs")
