@@ -26,7 +26,6 @@ kagglehub = "*"
 mlflow = "*"
 dvc = "*"
 prometheus-client = "*"
-httpx2 = "*"
 pyyaml = "*"
 pathspec = "*"
 
