@@ -58,14 +58,14 @@ PDF scope: **unit tests, GitHub Actions, Docker build, GHCR publishing**.
 - [x] Docker image builds locally.
 - [x] GHCR publishing path is configured.
 - [x] Documentation does not claim an unverified GHCR push.
-- [ ] Create/select GitHub repository: **[GITHUB REPOSITORY URL]**.
-- [ ] Push final commit and tag.
-- [ ] Confirm Actions permissions include `contents: read` and `packages: write`.
-- [ ] Run M3 successfully: **[GITHUB ACTIONS RUN URL]**.
-- [ ] Confirm all unit-test and image-build jobs are green.
-- [ ] Confirm package exists in GHCR: **[GHCR IMAGE URL]**.
-- [ ] Record immutable digest: **[GHCR SHA256 DIGEST]**.
-- [ ] Verify displayed digest matches the image intended for M4 deployment.
+- [x] Create/select GitHub repository: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline**.
+- [x] Push final commit. Tag pending confirmed semester (see Identity section).
+- [x] Confirm Actions permissions include `contents: read` and `packages: write`.
+- [x] Run M3 successfully: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647**.
+- [x] Confirm all unit-test and image-build jobs are green.
+- [x] Confirm package exists in GHCR: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline**.
+- [x] Record immutable digest: **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`**.
+- [x] Verify displayed digest matches the image intended for M4 deployment (same tag/digest pulled by the deploy job).
 - [ ] Capture 6-passed/83%-coverage screenshot.
 - [ ] Capture successful GitHub Actions test/build screenshot.
 - [ ] Capture GHCR tag/digest screenshot.
@@ -81,16 +81,16 @@ PDF scope: **Docker Compose target; main-branch self-hosted Linux runner pulls/d
 - [x] Final local Prometheus target `http://api:8000/metrics` reported `up`.
 - [x] Local post-deployment smoke check passed.
 - [x] Documentation does not claim an unverified remote self-hosted deployment.
-- [ ] Provision a trusted Linux x64 host.
-- [ ] Install Docker Engine and Docker Compose v2 on the host.
-- [ ] Register the runner only to the trusted repository/organization.
-- [ ] Confirm runner labels match the workflow.
-- [ ] Confirm runner is online before the main-branch deployment.
-- [ ] Complete remote pull/deploy/smoke: **[DEPLOYMENT JOB URL]**.
-- [ ] Confirm deployed image digest: **[DEPLOYED SHA256 DIGEST]**.
-- [ ] Verify remote Compose containers are healthy.
-- [ ] Verify remote `/health` and one cat/dog request.
-- [ ] Record endpoint/private-host note: **[DEPLOYMENT URL / PRIVATE HOST NOTE]**.
+- [x] Provision a trusted Linux x64 host (WSL2 Ubuntu 24.04, x86_64, Docker Engine + Compose v2 v5.3.1).
+- [x] Install Docker Engine and Docker Compose v2 on the host.
+- [x] Register the runner only to the trusted repository/organization (repo-scoped, not org-wide).
+- [x] Confirm runner labels match the workflow (`self-hosted`, `linux` — matches `runs-on: [self-hosted, linux]`).
+- [x] Confirm runner is online before the main-branch deployment.
+- [x] Complete remote pull/deploy/smoke: **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227**.
+- [x] Confirm deployed image digest: **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`**.
+- [x] Verify remote Compose containers are healthy (`api` and `prometheus`, both `Up`/`healthy`).
+- [x] Verify remote `/health` and one cat/dog request (`/health` → `{"status":"ready","model_loaded":true}`; `/predict` on a real cat image → `{"label":"cats","confidence":0.582}`).
+- [x] Record endpoint/private-host note: **private host — student's own WSL2 Ubuntu self-hosted runner, `http://localhost:8000`, not publicly routable.**
 - [ ] Capture runner-online, deploy, Compose-health, and smoke screenshots.
 - [ ] Disable/remove the runner after demonstration if it will not be securely maintained.
 
@@ -117,10 +117,10 @@ PDF scope: **request/response logs, Prometheus counters/latency, feedback and 20
 - [ ] Capture request/response log screenshot without private data.
 - [ ] Capture `/metrics` output and Prometheus target `up`.
 - [ ] Capture 20-request accuracy/F1/latency output.
-- [ ] Build source/config/model ZIP: **[ZIP FILENAME]**.
-- [ ] Record ZIP SHA-256: **[ZIP SHA256]**.
-- [ ] Verify ZIP contains required source, configuration, and model artifact.
-- [ ] Verify ZIP excludes secrets, `.env`, `.venv`, unnecessary raw data, private logs, and caches.
+- [x] Build source/config/model ZIP: **`cats-dogs-mlops-submission.zip`** (114 git-tracked files, 14.7 MB).
+- [x] Record ZIP SHA-256: **`fb6374f252491e84743fdf9fdc0ccb9b8eb971c149a841c658ed3413fb36d4cc`**.
+- [x] Verify ZIP contains required source, configuration, and model artifact (`src/`, `scripts/`, `tests/`, `params.yaml`, `dvc.yaml`, `Dockerfile`, `models/cat_dog_cnn.pt`, `mlruns/`).
+- [x] Verify ZIP excludes secrets, `.env`, `.venv`, unnecessary raw data, private logs, and caches (built from `git ls-files` — no untracked/ignored content, no `.env`/`.idea`/build caches).
 - [ ] Record final video: **[VIDEO URL OR FILENAME]**.
 - [ ] Confirm final video duration is below 5:00.
 
@@ -200,12 +200,12 @@ docker compose down
 | Student name | **[STUDENT NAME]** |
 | BITS ID | **[BITS ID]** |
 | Confirmed semester | **[S1-25 OR S2-25]** |
-| Final Git commit | **[COMMIT SHA]** |
-| Release/tag | **[TAG]** |
-| CI run | **[URL]** |
-| GHCR digest | **[SHA256]** |
-| Deployment job | **[URL]** |
-| ZIP | **[FILENAME AND SHA256]** |
+| Final Git commit | **`237834474c8418f497c12d6abf9bdf093cd354c4`** |
+| Release/tag | **[TAG]** (pending confirmed semester) |
+| CI run | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647** |
+| GHCR digest | **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`** |
+| Deployment job | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227** |
+| ZIP | **`cats-dogs-mlops-submission.zip`**, sha256 `fb6374f252491e84743fdf9fdc0ccb9b8eb971c149a841c658ed3413fb36d4cc` |
 | Video | **[URL/FILENAME]** |
 | Submission time | **[DATE AND TIME WITH TIME ZONE]** |
 
