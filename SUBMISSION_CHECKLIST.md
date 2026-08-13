@@ -117,8 +117,8 @@ PDF scope: **request/response logs, Prometheus counters/latency, feedback and 20
 - [x] Capture request/response log screenshot without private data. (`docs/screenshots/E13a_request_logs.png`, `E13b_feedback_predictions.png`)
 - [x] Capture `/metrics` output and Prometheus target `up`. (`docs/screenshots/E14_prometheus_target_up.png`)
 - [x] Capture 20-request accuracy/F1/latency output. (`docs/screenshots/E15_post_deployment.png`)
-- [x] Build source/config/model ZIP: **`cats-dogs-mlops-submission.zip`** (172 git-tracked files, 16.6 MB).
-- [x] Record ZIP SHA-256: **`53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1`**.
+- [x] Build source/config/model ZIP: **`cats-dogs-mlops-submission.zip`** (173 git-tracked files, 16.6 MB).
+- [x] Record ZIP SHA-256: **`7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`** (built from commit `e513119`'s tree; the checksum necessarily can't include the commit that records the checksum itself — a one-commit lag inherent to any self-referential build, not an oversight).
 - [x] Verify ZIP contains required source, configuration, and model artifact (`src/`, `scripts/`, `tests/`, `params.yaml`, `dvc.yaml`, `Dockerfile`, `models/cat_dog_cnn.pt`, `mlruns/`).
 - [x] Verify ZIP excludes secrets, `.env`, `.venv`, unnecessary raw data, private logs, and caches (built from `git ls-files` — no untracked/ignored content, no `.env`/`.idea`/build caches).
 - [ ] Record final video: **[VIDEO URL OR FILENAME]**.
@@ -205,7 +205,7 @@ docker compose down
 | CI run | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647** |
 | GHCR digest | **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`** |
 | Deployment job | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227** |
-| ZIP | **`cats-dogs-mlops-submission.zip`**, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1` |
+| ZIP | **`cats-dogs-mlops-submission.zip`**, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 | Video | **[URL/FILENAME]** |
 | Submission time | **[DATE AND TIME WITH TIME ZONE]** |
 

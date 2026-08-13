@@ -17,7 +17,7 @@ End-to-end MLOps implementation for binary image classification, prepared for BI
 | GitHub repository | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline` |
 | GitHub Actions run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647` |
 | GHCR image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` |
-| Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1` |
+| Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 
 ## What this repository delivers
 
@@ -220,7 +220,7 @@ The service records request/response activity, exports Prometheus counters and l
 
 The final submission must additionally include:
 
-- Source/config/model ZIP: `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1`.
+- Source/config/model ZIP: `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`.
 - **[VIDEO URL OR FILENAME — UNDER FIVE MINUTES]**
 - **[SCREENSHOTS: DVC, MLFLOW, TESTS, IMAGE BUILD, COMPOSE, PROMETHEUS, ACTIONS/GHCR/REMOTE DEPLOY]**
 

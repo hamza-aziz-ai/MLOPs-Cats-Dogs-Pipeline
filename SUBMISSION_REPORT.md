@@ -13,7 +13,7 @@
 | GitHub repository | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline` |
 | CI run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647` |
 | Container image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` |
-| Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1` |
+| Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d` |
 
 ## 1. Source and scope
 
@@ -252,7 +252,7 @@ The deployed accuracy is at or above the offline test accuracy (0.62), which sup
 
 The documentation and a 4:40 video script are ready. Delivered:
 
-- source, configuration, and model artifact ZIP: `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1`;
+- source, configuration, and model artifact ZIP: `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`;
 - identity and semester confirmation: Hamza Aziz, 2024AC05133, S2-25;
 - live M3/M4 URLs and digest (verified, see cover table).
 
@@ -350,7 +350,7 @@ docker compose down
 - `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`
 - `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`
 - `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`
-- `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1`
+- `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`
 - **[VIDEO URL OR FILENAME]**
 - **[SCREENSHOT: DVC REPRO AND CLEAN STATUS]**
 - **[SCREENSHOT: MLFLOW RUN e040fb0dbc64492f96eea1affa576c90]**
