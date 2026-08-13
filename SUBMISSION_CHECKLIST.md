@@ -190,7 +190,7 @@ docker compose down
 - [x] Confirm no state-of-the-art or production-ready claim was introduced.
 - [x] Confirm live M3/M4 claims match genuine URLs, digest, and screenshots.
 - [x] Confirm model checksum and MLflow run ID match artifacts/screenshots.
-- [ ] Confirm final Git commit/tag is the submitted one (tag pending this commit).
+- [x] Confirm final Git commit/tag is the submitted one (`896c4cd`, tag `s2-25-aimlczg523-assignment2`).
 - [x] Confirm all evaluator links open (GitHub run, GHCR package, deploy job all verified reachable).
 - [ ] Watch final video once at normal speed; audio/text are readable.
 - [ ] Upload before the LMS deadline and retain receipt.
@@ -200,8 +200,8 @@ docker compose down
 | Student name | Hamza Aziz |
 | BITS ID | 2024AC05133 |
 | Confirmed semester | S2-25 |
-| Final Git commit | **`237834474c8418f497c12d6abf9bdf093cd354c4`** |
-| Release/tag | **[TAG]** (pending confirmed semester) |
+| Final Git commit | **`896c4cd`** |
+| Release/tag | **`s2-25-aimlczg523-assignment2`** |
 | CI run | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647** |
 | GHCR digest | **`sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`** |
 | Deployment job | **https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227** |
