@@ -236,7 +236,7 @@ The baseline's test accuracy (`0.62`) and weighted F1 (`0.6041666667`) show that
 - compare per-class metrics, calibration, latency, and model size;
 - promote the new checkpoint only if it improves a predeclared acceptance gate.
 
-`notebooks/ResNet-Implementation_COPY.ipynb` implements this repository's own from-scratch ResNet-50 (identity/convolutional blocks, all 5 stages) as a companion exploration, trained on this project's `data/processed` split. It is **not** the transfer-learning improvement above — it's randomly initialized, not pretrained — so it doesn't by itself solve the accuracy gap; genuine transfer learning with pretrained ImageNet weights remains the recommended next step.
+`notebooks/02_resnet50_from_scratch.ipynb` implements this repository's own from-scratch ResNet-50 (identity/convolutional blocks, all 5 stages) as a companion exploration, trained on this project's `data/processed` split. It is **not** the transfer-learning improvement above — it's randomly initialized, not pretrained — so it doesn't by itself solve the accuracy gap; genuine transfer learning with pretrained ImageNet weights remains the recommended next step.
 
 Other limitations include dataset bias, the closed two-class assumption, lack of out-of-distribution rejection, and aggregate metrics hiding class-specific errors.
 
