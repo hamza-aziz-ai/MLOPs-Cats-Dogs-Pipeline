@@ -8,8 +8,9 @@ import os
 import random
 import subprocess
 import time
+from collections.abc import Sized
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import matplotlib
 
@@ -157,13 +158,13 @@ def run_epoch(
         image_batch = image_batch.to(device)
         target_batch = target_batch.to(device)
 
-        if is_training:
+        if optimizer is not None:
             optimizer.zero_grad(set_to_none=True)
 
         with torch.set_grad_enabled(is_training):
             logits = model(image_batch)
             loss = loss_function(logits, target_batch)
-            if is_training:
+            if optimizer is not None:
                 loss.backward()
                 optimizer.step()
 
@@ -319,9 +320,9 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
                 "seed": arguments.seed,
                 "device": str(device),
                 "class_names": ",".join(class_names),
-                "train_samples": len(loaders["train"].dataset),
-                "validation_samples": len(loaders["validation"].dataset),
-                "test_samples": len(loaders["test"].dataset),
+                "train_samples": len(cast(Sized, loaders["train"].dataset)),
+                "validation_samples": len(cast(Sized, loaders["validation"].dataset)),
+                "test_samples": len(cast(Sized, loaders["test"].dataset)),
                 "git_commit": git_commit_or_unknown(),
             }
         )
