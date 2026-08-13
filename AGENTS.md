@@ -1,96 +1,185 @@
+# Repository Instructions
+
+Keep this file and `CLAUDE.md` synchronized. They provide stable operating
+rules; `MEMORY.md` contains the volatile Git, training, evidence, and deployment
+state.
+
 ## Start here
 
-Read `MEMORY.md` before doing anything else. It has the actual current state
-(what's in progress, what's stale, what's local-only vs. pushed) — this file
-only has operating conventions, not the project state, and the project state changes
-too fast to duplicate here.
+1. Read `MEMORY.md` completely.
+2. Verify its snapshot with `git log -1`, `git status`, and process inspection.
+3. If DVC training is active, do not start another DVC stage, training script,
+   or full notebook execution. Wait for the existing process to finish.
 
-## Commands
+## Architecture
 
-From a normal shell, run project commands through **pipenv**:
+The production model is `CatDogResNet50`, a randomly initialized ResNet-50
+implemented from scratch in `src/cats_dogs_mlops/model.py`. It is not pretrained
+and does not use transfer learning.
+
+```text
+scripts/download_data.py
+  -> scripts/prepare_data.py
+  -> data/processed/{train,validation,test}/{cats,dogs}
+  -> scripts/train.py + src/cats_dogs_mlops/model.py
+  -> models/resnet50_baseline.pt
+  -> src/cats_dogs_mlops/inference.py
+  -> src/cats_dogs_mlops/api.py
+  -> Docker Compose + Prometheus
 ```
+
+Key files:
+
+- `params.yaml`: DVC and notebook configuration source of truth.
+- `dvc.yaml`: `download -> prepare -> train` reproducible pipeline.
+- `notebooks/01_model_development.ipynb`: single M1 development notebook and
+  theoretical/code walkthrough for the same ResNet-50.
+- `src/cats_dogs_mlops/preprocessing.py`: shared train/evaluation transforms.
+- `scripts/post_deployment_evaluation.py`: deployed-service evaluation.
+- `.github/workflows/ci-cd.yml`: test, image publish, and self-hosted deploy.
+
+## Environment and commands
+
+From a normal shell, use Pipenv:
+
+```powershell
 pipenv run pytest
 pipenv run dvc repro
 pipenv run dvc status
-pipenv run python scripts/train.py ...
+pipenv run python scripts/train.py --help
 pipenv run jupyter nbconvert --to notebook --execute --inplace notebooks/01_model_development.ipynb
 ```
 
-If the prompt already starts with `(MLOps-Cats-Dogs-Pipeline)`, the Pipenv
-environment is active. Run the inner command directly (`pytest`, `dvc repro`,
-`python scripts/train.py ...`) instead of nesting `pipenv run`; nesting causes
-Pipenv's virtual-environment Courtesy Notice. The system/bare Python
-interpreter outside this environment does not have the project's dependencies.
+If the prompt already begins with `(MLOps-Cats-Dogs-Pipeline)`, the environment
+is active. Run the inner command directly:
 
-## Dependency files — two separate sources of truth, don't unify them
-
-- `Pipfile`/`Pipfile.lock` — **local dev**. Pulls CUDA-enabled `torch`/
-  `torchvision` from a separate `downloadpytorch` index. Python 3.14 locally.
-- `requirements.txt`/`requirements-api.txt` — **CI and deployment**. Must
-  resolve on plain PyPI against Python 3.11 (what `.github/workflows/ci-cd.yml`
-  and the Docker image use). Verify any new/changed pin actually resolves for
-  cp311 manylinux before committing — pins that only exist on the CUDA index,
-  or that need a newer Python than 3.11, will pass locally and fail CI.
-
-## DVC gotcha: `cache: false` on git-tracked outputs
-
-Model checkpoints, plots, and metrics under `models/`, `artifacts/`, and
-`mlruns/` are committed to git directly (so they're visible on GitHub/in the
-ZIP without needing a DVC remote). Any `dvc.yaml` stage that produces one of
-these files **must** mark that output `cache: false`, or `dvc repro` refuses
-to run with "already tracked by SCM." If you add a new stage output
-also meant to be git-tracked, do the same.
-
-## Self-hosted CI runner (M4 deploy job)
-
-`runs-on: [self-hosted, linux]` needs a real machine registered to this repo.
-Quickest option on this Windows machine: WSL2 Ubuntu (Docker Desktop already
-shares its daemon with it, so `docker`/`docker compose` work there for free).
-```
-gh api -X POST repos/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runners/registration-token
-wsl -d Ubuntu --cd ~ -e bash -lc "mkdir -p ~/actions-runner && cd ~/actions-runner && \
-  curl -sSL -o r.tar.gz https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64-2.328.0.tar.gz && \
-  tar xzf r.tar.gz && \
-  ./config.sh --url https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline --token <TOKEN> --labels linux --unattended"
-wsl -d Ubuntu --cd ~ -e bash -lc "cd ~/actions-runner && nohup ./run.sh > runner.log 2>&1 &"
-```
-Note the `--cd ~` on every `wsl` invocation — without it, `wsl.exe` tries to
-translate the Windows cwd into a WSL path and fails outright on this setup.
-Tear down when done (registration tokens expire in ~1 hr, get a fresh one):
-```
-gh api -X POST repos/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runners/remove-token
-wsl -d Ubuntu --cd ~ -e bash -lc "cd ~/actions-runner && ./config.sh remove --token <TOKEN>"
+```powershell
+pytest
+dvc repro
+dvc status
+python scripts/train.py --help
 ```
 
-## Notebook editing convention
+Do not nest `pipenv run` inside the active environment; that produces Pipenv's
+Courtesy Notice. Bare system Python outside the environment lacks project
+dependencies.
 
-`notebooks/01_model_development.ipynb` is hand-authored (Jupyter-edited by
-the student originally), not generated by a script — there is no `generate_notebook.py`
-any more (it generated the now-deleted CatDogCNN notebook; deleted alongside it).
-Edit `.ipynb` cells directly via a small Python/`json` script when scripting
-edits (see recent git history for the pattern: load, edit `cells[i]['source']`,
-`nbformat.validate()`, dump). **Never leave a Markdown or code comment
-describing an API/behaviour the cell no longer uses** — this bit us repeatedly
-this session. (Leftover Keras references survived multiple "fix the obvious
-one" passes because they weren't swept for exhaustively the first time.) When
-touching a cell, grep the whole notebook for the thing you're removing/renaming
-before considering the edit done.
+Useful targeted DVC commands:
+
+```powershell
+dvc repro prepare   # rebuild only processed splits when data parameters change
+dvc repro train     # train from prepared data
+dvc status
+```
+
+Never run these concurrently with an existing DVC/training/notebook process.
+
+## Training configuration and early stopping
+
+Read values from `params.yaml`; do not hardcode notebook-only alternatives.
+The current configuration uses 224x224 images, a 70/20/10 split, up to 5,000
+images per class, batch size 32, and a 100-epoch budget.
+
+Both `scripts/train.py` and the notebook use early stopping with
+`training.patience` and `training.min_delta` (currently 20 and 0.01). The script
+restores the best validation-accuracy state before test evaluation and final
+checkpoint creation.
+
+## Output ownership and concurrency
+
+- Shared model checkpoint: `models/resnet50_baseline.pt`.
+- DVC train outputs: `metrics/training_metrics.json` and root
+  `artifacts/{loss_curves.png,confusion_matrix.png,model_metadata.json}`.
+- Notebook-only reports, metrics, plots, and prediction images:
+  `artifacts/resnet50/`.
+- MLflow file store: `mlruns/`.
+
+DVC may delete its declared outputs before rebuilding them. While a train stage
+is running, missing checkpoint/metric/plot files and a modified `dvc.lock` are
+transient. Do not restore or commit them mid-run.
+
+The notebook and DVC training share the checkpoint path. Never execute them in
+parallel.
+
+## Dependency files are intentionally separate
+
+- `Pipfile`/`Pipfile.lock`: local CUDA development on Python 3.14, including a
+  dedicated PyTorch package index.
+- `requirements.txt`/`requirements-api.txt`: Python 3.11 CI and Docker builds
+  from plain PyPI.
+
+Do not mechanically unify these files. Verify changed CI/deployment pins have
+Python 3.11 manylinux wheels on plain PyPI.
+
+## DVC and Git-tracked outputs
+
+Model checkpoints, plots, metrics, and selected MLflow evidence are committed
+to Git for assignment visibility. Every corresponding `dvc.yaml` output must
+use `cache: false`; otherwise DVC rejects the file as already tracked by SCM.
+
+After a run completes:
+
+1. Confirm the process exit code.
+2. Inspect final metrics, MLflow status, checkpoint hash, and artefact timestamps.
+3. Run `dvc status`.
+4. Run `pytest`.
+5. Review `git status` before staging anything.
+
+Never commit `dev/`, `.ipynb_checkpoints/`, temporary lock files, partial MLflow
+runs, or unrelated notebook execution state.
+
+## Notebook editing
+
+`notebooks/01_model_development.ipynb` is hand-authored and deliberately has
+`RUN_TRAINING = True`. A top-to-bottom execution can therefore train for up to
+100 epochs. Do not execute it merely to validate a source-only edit.
+
+For scripted changes, use `nbformat`, preserve cell order/outputs unless asked
+otherwise, run `nbformat.validate()`, and compile every code cell. Search the
+whole notebook after removing or renaming a concept. Do not leave stale Keras,
+bird-dataset, retired-CNN, or migration-diary prose behind.
+
+Notebook source and execution output can be dirty in the same JSON file. When
+only source should be committed, stage the intended source hunks rather than
+committing every notebook output change.
+
+## Tests and static warnings
+
+The suite contains API, inference, preprocessing, and split/deduplication tests.
+Run `pytest` after training completes or after ordinary code changes. Keep both
+runtime warnings and IDE type inspections clean through real type narrowing or
+API corrections, not blanket warning suppression.
+
+## CI/CD and self-hosted deployment
+
+The deployment job uses `runs-on: [self-hosted, linux]`. The previous runner was
+removed. Before the next deployment, register a fresh Linux runner (WSL2 Ubuntu
+on this machine is the established option) using the current commands shown by
+GitHub under **Settings -> Actions -> Runners -> New self-hosted runner**.
+
+On this Windows host, include `--cd ~` in every `wsl` invocation; otherwise
+`wsl.exe` can fail while translating the Windows repository path. Docker
+Desktop supplies the shared Docker daemon. Remove the runner again after final
+deployment/evidence capture.
 
 ## Git discipline
 
-- New commits only, never `--amend` on someone else's/a previous session's
-  work.
-- **Do not `git push` without the user explicitly asking in that specific
-  message** — this holds across the whole session, not just once. Committing
-  is always fine; pushing triggers a real ~20-minute CI/CD cycle with no way
-  to cancel cleanly.
+- Make new commits only; never amend or rewrite previous work.
+- Preserve unrelated user changes in a dirty worktree.
+- Commit only the files/hunks belonging to the current request.
+- **Never push unless the user explicitly asks in that specific message.**
+- A push triggers the full CI/CD workflow, so do not infer push authorization
+  from an earlier request.
 
 ## graphify
 
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+The repository knowledge graph lives under `graphify-out/`.
 
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- For codebase questions, start with `graphify query "<question>"` when
+  `graphify-out/graph.json` exists.
+- Use `graphify path "<A>" "<B>"` for relationships and
+  `graphify explain "<concept>"` for focused context.
+- Prefer `graphify-out/wiki/index.md` for broad navigation.
+- Read `GRAPH_REPORT.md` only when scoped queries are insufficient.
+- After code changes, run `graphify update .`. Documentation-only state updates
+  do not require a topology refresh.
