@@ -62,7 +62,11 @@ def run_smoke_test(base_url: str, timeout_seconds: float) -> dict[str, object]:
         assert prediction_payload["label"] in {"cats", "dogs"}
         assert 0.0 <= prediction_payload["confidence"] <= 1.0
         assert set(prediction_payload["probabilities"]) == {"cats", "dogs"}
-        assert abs(sum(prediction_payload["probabilities"].values()) - 1.0) < 1e-5
+        probability_total = sum(
+            (float(value) for value in prediction_payload["probabilities"].values()),
+            0.0,
+        )
+        assert abs(probability_total - 1.0) < 1e-5
         assert prediction_payload["model_version"] == health_payload["model_version"]
 
         model_response = client.get("/model/info")
@@ -102,4 +106,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
