@@ -23,15 +23,15 @@ def build_training_transform(image_size: int = IMAGE_SIZE) -> transforms.Compose
     """Create stochastic augmentation for baseline-CNN training.
 
     Augmentation teaches the model invariance to small geometric and colour
-    changes. Normalisation maps RGB values from approximately ``[0, 1]`` to
-    ``[-1, 1]``, which usually improves gradient-based optimisation.
+    changes. Normalization maps RGB values from approximately ``[0, 1]`` to
+    ``[-1, 1]``, which usually improves gradient-based optimization.
 
     Args:
         image_size: Square output height and width in pixels.
 
     Returns:
-        transforms.Compose: Callable that converts a PIL image to a normalised
-        tensor with shape ``(3, image_size, image_size)``.
+        transforms.Compose: Callable that converts a PIL image to a normalized
+        tensor with the shape ``(3, image_size, image_size)``.
     """
 
     return transforms.Compose(
@@ -52,7 +52,7 @@ def build_evaluation_transform(image_size: int = IMAGE_SIZE) -> transforms.Compo
         image_size: Square output height and width in pixels.
 
     Returns:
-        transforms.Compose: Callable returning a normalised RGB tensor with
+        transforms.Compose: Callable returning a normalized RGB tensor with
         shape ``(3, image_size, image_size)``.
     """
 
@@ -68,7 +68,7 @@ def build_evaluation_transform(image_size: int = IMAGE_SIZE) -> transforms.Compo
 def canonicalize_image(image: Image.Image, image_size: int = IMAGE_SIZE) -> Image.Image:
     """Convert an image to RGB and crop it to the required square dimensions.
 
-    ``ImageOps.fit`` preserves aspect ratio while applying a centred crop, so
+    ``ImageOps.fit`` preserves the aspect ratio while applying a centred crop, so
     the image is not stretched. EXIF orientation is applied before conversion.
 
     Args:

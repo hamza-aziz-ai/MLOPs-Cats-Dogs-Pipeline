@@ -10,7 +10,6 @@ import random
 import shutil
 from collections import Counter
 from pathlib import Path
-from typing import Iterable
 
 from PIL import Image, UnidentifiedImageError
 
@@ -27,7 +26,7 @@ def discover_class_images(raw_dir: Path, class_name: str) -> list[Path]:
     """Discover images whose nearest class directory identifies their label.
 
     The Kaggle dataset has changed nesting across mirrors (for example,
-    ``training_set/training_set/cats``). Searching recursively by parent folder
+    ``training_set/training_set/cats``). Searching recursively by the parent folder
     supports those layouts while retaining an explicit, auditable label rule.
 
     Args:
@@ -105,7 +104,7 @@ def split_paths(
         dict[str, list[Path]]: Non-overlapping paths keyed by split name.
 
     Raises:
-        ValueError: If ratios do not sum to one or fewer than three images are
+        ValueError: If ratios do not sum to one or fewer than three, images are
         available for a class.
     """
 

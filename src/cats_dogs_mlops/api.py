@@ -14,11 +14,10 @@ from typing import Annotated, AsyncIterator
 
 import torch
 from fastapi import FastAPI, File, Form, HTTPException, Request, Response, UploadFile
-from pydantic import BaseModel, Field
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
+from pydantic import BaseModel, Field
 
 from cats_dogs_mlops.config import (
-    CLASS_NAMES,
     feedback_path_from_environment,
     model_path_from_environment,
 )

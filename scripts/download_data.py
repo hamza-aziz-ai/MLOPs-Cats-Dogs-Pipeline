@@ -24,7 +24,7 @@ def download_dataset(
     and lets preprocessing run without depending on the cache layout.
 
     Args:
-        dataset_handle: Kaggle owner-and-dataset slug, for example
+        dataset_handle: Kaggle owner-and-dataset slug, for example,
             ``tongpython/cat-and-dog``.
         output_dir: Repository directory recorded as the DVC stage output.
         overwrite: Whether an existing ``raw`` output may be replaced.
@@ -34,7 +34,7 @@ def download_dataset(
 
     Raises:
         FileExistsError: If output exists and overwrite is not enabled.
-        ValueError: If an unsafe overwrite target or malformed handle is used.
+        ValueError: If an unsafe overwritten target or malformed handle is used.
     """
 
     if dataset_handle.count("/") != 1:

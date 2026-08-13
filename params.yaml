@@ -3,21 +3,22 @@ data:
   raw_dir: data/raw
   processed_dir: data/processed
   image_size: 224
-  train_ratio: 0.80
-  validation_ratio: 0.10
+  train_ratio: 0.70
+  validation_ratio: 0.20
   test_ratio: 0.10
-  max_images_per_class: 1000
+  max_images_per_class: 5000
   seed: 42
 
 training:
   batch_size: 32
-  epochs: 5
+  epochs: 100
   learning_rate: 0.001
   weight_decay: 0.0001
   num_workers: 0
+  patience: 20
+  min_delta: 0.01
   model_version: 1.0.0
 
 tracking:
   uri: file:./mlruns
   experiment_name: cats-vs-dogs-baseline
-

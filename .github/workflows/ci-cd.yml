@@ -34,7 +34,7 @@ jobs:
 
       - name: Run automated tests
         env:
-          MODEL_PATH: models/cat_dog_cnn.pt
+          MODEL_PATH: models/resnet50_baseline.pt
         run: python -m pytest -q
 
   build-and-push:
@@ -49,6 +49,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Derive lowercase GHCR image reference
         id: image

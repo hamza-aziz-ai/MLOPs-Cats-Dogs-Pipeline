@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import string
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,16 @@ from cats_dogs_mlops.config import CLASS_NAMES, IMAGE_SIZE
 # Flattened feature size after the backbone's average pool, for the default
 # 224x224 input: 224 -> 112 -> 55 -> 28 -> 14 -> 7 -> 4 spatially, 2048 channels.
 _FLATTENED_FEATURES = 4 * 4 * 2048
+_NOTEBOOK_COMPONENT_NAMES = {
+    "conv1": "branch2a",
+    "bn1": "branch2a",
+    "conv2": "branch2b",
+    "bn2": "branch2b",
+    "conv3": "branch2c",
+    "bn3": "branch2c",
+    "shortcut_conv": "branch1",
+    "shortcut_bn": "branch1",
+}
 
 
 def _forward_bottleneck_path(
@@ -123,19 +134,14 @@ class CatDogResNet50(nn.Module):
     IDBLOCK*3 -> CONVBLOCK -> IDBLOCK*5 -> CONVBLOCK -> IDBLOCK*2 -> AVGPOOL ->
     FLATTEN -> DENSE*3
 
-    Randomly initialised (no pretrained ImageNet weights) -- the standard
+    Randomly initialized (no pretrained ImageNet weights) -- the standard
     ResNet-50 bottleneck stage layout (He et al., 2015), not a smaller
     "baseline" variant. See ``notebooks/01_model_development.ipynb`` for the
     architecture theory and a layer-by-layer derivation.
-
-    Attributes:
-        backbone: Stem plus 5 bottleneck stages, producing a (4, 4, 2048)
-            feature map for the default 224x224 input.
-        classifier: Flatten and a 3-layer fully-connected head to class logits.
     """
 
     def __init__(self, num_classes: int = len(CLASS_NAMES), in_channels: int = 3) -> None:
-        """Initialise the backbone and classification head.
+        """Initialize the backbone and classification head.
 
         Args:
             num_classes: Number of mutually exclusive output classes.
@@ -231,10 +237,58 @@ def create_model(num_classes: int = len(CLASS_NAMES)) -> CatDogResNet50:
         num_classes: Number of output classes.
 
     Returns:
-        CatDogResNet50: Randomly initialised network ready for training.
+        CatDogResNet50: Randomly initialized network ready for training.
     """
 
     return CatDogResNet50(num_classes=num_classes)
+
+
+def _notebook_key_for_pipeline_key(pipeline_key: str) -> str:
+    """Translate one pipeline state key to the notebook's layer naming."""
+
+    key_parts = pipeline_key.split(".")
+    if key_parts[0] == "conv1":
+        return f"base_model.conv1.{'.'.join(key_parts[1:])}"
+    if key_parts[0] == "bn1":
+        return f"base_model.bn_conv1.{'.'.join(key_parts[1:])}"
+    if key_parts[0] == "classifier":
+        classifier_names = {"1": "fc1", "3": "fc2", "5": "fc3"}
+        return f"head_model.{classifier_names[key_parts[1]]}.{'.'.join(key_parts[2:])}"
+
+    stage_number = int(key_parts[0].removeprefix("stage"))
+    block_letter = string.ascii_lowercase[int(key_parts[1])]
+    component_name = key_parts[2]
+    branch_name = _NOTEBOOK_COMPONENT_NAMES[component_name]
+    block_name = f"res{stage_number}{block_letter}"
+    if component_name in {"bn1", "bn2", "bn3", "shortcut_bn"}:
+        layer_name = f"bn{stage_number}{block_letter}_{branch_name}"
+    else:
+        layer_name = f"{block_name}_{branch_name}"
+    return f"base_model.{block_name}.{layer_name}.{'.'.join(key_parts[3:])}"
+
+
+def _remap_notebook_state_dict(
+    notebook_state_dict: dict[str, torch.Tensor],
+    model: CatDogResNet50,
+) -> dict[str, torch.Tensor]:
+    """Map the notebook's named ResNet layers to the serving model keys."""
+
+    remapped_state_dict: dict[str, torch.Tensor] = {}
+    for pipeline_key, expected_tensor in model.state_dict().items():
+        notebook_key = _notebook_key_for_pipeline_key(pipeline_key)
+        if notebook_key not in notebook_state_dict:
+            raise ValueError(f"Notebook checkpoint is missing key: {notebook_key}")
+        notebook_tensor = notebook_state_dict[notebook_key]
+        if notebook_tensor.shape != expected_tensor.shape:
+            raise ValueError(
+                f"Notebook checkpoint shape mismatch for {notebook_key}: "
+                f"expected {tuple(expected_tensor.shape)}, got {tuple(notebook_tensor.shape)}"
+            )
+        remapped_state_dict[pipeline_key] = notebook_tensor
+
+    if len(remapped_state_dict) != len(notebook_state_dict):
+        raise ValueError("Notebook checkpoint contains unexpected model-state keys")
+    return remapped_state_dict
 
 
 def save_checkpoint(
@@ -276,9 +330,9 @@ def load_checkpoint(
     checkpoint_path: Path,
     device: torch.device | str = "cpu",
 ) -> tuple[CatDogResNet50, dict[str, Any]]:
-    """Load a trusted project checkpoint for inference.
+    """Load a trusted pipeline or model-development-notebook checkpoint.
 
-    ``weights_only=True`` limits deserialisation to tensor and primitive data
+    ``weights_only=True`` limits deserialization to tensor and primitive data
     types, which is safer than loading arbitrary pickled Python objects.
 
     Args:
@@ -289,7 +343,7 @@ def load_checkpoint(
         tuple[CatDogResNet50, dict[str, Any]]: Evaluation-mode model and metadata.
 
     Raises:
-        FileNotFoundError: If the model artifact is missing.
+        FileNotFoundError: If the model artefact is missing.
         ValueError: If the checkpoint does not contain required fields.
     """
 
@@ -304,27 +358,45 @@ def load_checkpoint(
     )
     required_fields = {"model_state_dict", "class_names", "image_size", "model_version"}
     missing_fields = required_fields.difference(checkpoint)
-    if missing_fields:
+    is_notebook_state_dict = (
+        "model_state_dict" not in checkpoint
+        and "base_model.conv1.weight" in checkpoint
+        and "head_model.fc3.weight" in checkpoint
+    )
+    if missing_fields and not is_notebook_state_dict:
         raise ValueError(f"Checkpoint is missing fields: {sorted(missing_fields)}")
 
-    class_names = list(checkpoint["class_names"])
-    model = create_model(num_classes=len(class_names))
-    model.load_state_dict(checkpoint["model_state_dict"])
+    if is_notebook_state_dict:
+        class_names = list(CLASS_NAMES)
+        image_size = IMAGE_SIZE
+        model_version = "1.0.0"
+        metrics: dict[str, float] = {}
+        model = create_model(num_classes=len(class_names))
+        model_state_dict = _remap_notebook_state_dict(checkpoint, model)
+    else:
+        class_names = list(checkpoint["class_names"])
+        image_size = int(checkpoint["image_size"])
+        model_version = str(checkpoint["model_version"])
+        metrics = checkpoint.get("metrics", {})
+        model = create_model(num_classes=len(class_names))
+        model_state_dict = checkpoint["model_state_dict"]
+
+    model.load_state_dict(model_state_dict)
     model.to(device)
     model.eval()
 
     metadata = {
         "class_names": class_names,
-        "image_size": int(checkpoint["image_size"]),
-        "model_version": str(checkpoint["model_version"]),
-        "metrics": checkpoint.get("metrics", {}),
+        "image_size": image_size,
+        "model_version": model_version,
+        "metrics": metrics,
         "sha256": checkpoint_sha256(checkpoint_path),
     }
     return model, metadata
 
 
 def checkpoint_sha256(checkpoint_path: Path) -> str:
-    """Calculate a stable SHA-256 identifier for a model artifact.
+    """Calculate a stable SHA-256 identifier for a model artefact.
 
     Args:
         checkpoint_path: Path to the serialized model.

@@ -50,6 +50,8 @@ stages:
       --learning-rate ${training.learning_rate}
       --weight-decay ${training.weight_decay}
       --num-workers ${training.num_workers}
+      --patience ${training.patience}
+      --min-delta ${training.min_delta}
       --seed ${data.seed}
       --model-version ${training.model_version}
       --tracking-uri ${tracking.uri}

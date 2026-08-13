@@ -5,6 +5,11 @@ import torch
 from torch import nn
 
 from cats_dogs_mlops.inference import predict_tensor
+from cats_dogs_mlops.model import (
+    _notebook_key_for_pipeline_key,
+    _remap_notebook_state_dict,
+    create_model,
+)
 
 
 class FixedLogitModel(nn.Module):
@@ -31,3 +36,19 @@ def test_predict_tensor_returns_probabilities_and_winning_label() -> None:
     assert prediction["label"] == "dogs"
     assert prediction["confidence"] == pytest.approx(probabilities["dogs"])
     assert probabilities["dogs"] > probabilities["cats"]
+
+
+def test_notebook_state_dict_remaps_to_pipeline_model() -> None:
+    """Notebook layer names must preserve every pipeline tensor exactly."""
+
+    model = create_model()
+    pipeline_state = model.state_dict()
+    notebook_state = {
+        _notebook_key_for_pipeline_key(key): tensor.clone()
+        for key, tensor in pipeline_state.items()
+    }
+
+    remapped_state = _remap_notebook_state_dict(notebook_state, model)
+
+    assert remapped_state.keys() == pipeline_state.keys()
+    assert all(torch.equal(remapped_state[key], tensor) for key, tensor in pipeline_state.items())

@@ -5,7 +5,7 @@ single node without a source. For example, separate ``raise ValueError(...)``
 calls can create false cross-file and cross-community edges.
 
 The package-level cause is the shared ``ensure_named_node`` fallback used by
-multiple language extractors. This repository applies a post-processing step so
+multiple language extractors. This repository applies a post-processing step, so
 package upgrades and graph rebuilds do not overwrite the correction.
 
 Run the script without arguments to clean once, or pass ``--watch`` to clean

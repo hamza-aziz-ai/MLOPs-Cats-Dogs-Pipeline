@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import random
@@ -78,7 +79,7 @@ def create_data_loaders(
     Args:
         data_dir: Processed root containing train/validation/test folders.
         image_size: Input dimension expected by the model.
-        batch_size: Images processed per optimisation step.
+        batch_size: Images processed per optimization step.
         num_workers: Background loader processes; zero is safest on Windows.
         seed: Seed used for deterministic training shuffling.
 
@@ -276,10 +277,10 @@ def git_commit_or_unknown() -> str:
 
 
 def train(arguments: argparse.Namespace) -> dict[str, Any]:
-    """Execute one tracked training run and create all required artifacts.
+    """Execute one tracked training run and create all required artefacts.
 
     Args:
-        arguments: Validated command-line options controlling data, optimiser,
+        arguments: Validated command-line options controlling data, optimizer,
         output paths, and MLflow configuration.
 
     Returns:
@@ -344,6 +345,11 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
             }
         )
 
+        best_validation_accuracy = -1.0
+        best_state_dict: dict[str, torch.Tensor] | None = None
+        epochs_without_improvement = 0
+        stopped_epoch = arguments.epochs
+
         for epoch_index in range(arguments.epochs):
             train_loss, train_accuracy = run_epoch(
                 model,
@@ -377,6 +383,30 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
                 f"train_loss={train_loss:.4f} train_acc={train_accuracy:.4f} "
                 f"val_loss={validation_loss:.4f} val_acc={validation_accuracy:.4f}"
             )
+
+            if validation_accuracy > best_validation_accuracy + arguments.min_delta:
+                best_validation_accuracy = validation_accuracy
+                epochs_without_improvement = 0
+                best_state_dict = copy.deepcopy(model.state_dict())
+            else:
+                epochs_without_improvement += 1
+                if epochs_without_improvement >= arguments.patience:
+                    stopped_epoch = epoch_index + 1
+                    print(
+                        f"Early stopping at epoch {stopped_epoch}: "
+                        f"validation_accuracy did not improve by > {arguments.min_delta} "
+                        f"for {arguments.patience} epochs (best={best_validation_accuracy:.4f})."
+                    )
+                    break
+
+        if best_state_dict is not None:
+            model.load_state_dict(best_state_dict)
+        mlflow.log_metrics(
+            {
+                "best_validation_accuracy": best_validation_accuracy,
+                "stopped_epoch": stopped_epoch,
+            }
+        )
 
         true_indices, predicted_indices = collect_predictions(
             model,
@@ -482,13 +512,15 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--weight-decay", type=float, default=0.0001)
     parser.add_argument("--num-workers", type=int, default=0)
+    parser.add_argument("--patience", type=int, default=20)
+    parser.add_argument("--min-delta", type=float, default=0.01)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--model-version", default="1.0.0")
     parser.add_argument("--tracking-uri", default="file:./mlruns")
     parser.add_argument("--experiment-name", default="cats-vs-dogs-baseline")
     arguments = parser.parse_args()
-    if arguments.epochs <= 0 or arguments.batch_size <= 0:
-        parser.error("epochs and batch-size must be positive")
+    if arguments.epochs <= 0 or arguments.batch_size <= 0 or arguments.patience <= 0:
+        parser.error("epochs, batch-size, and patience must be positive")
     return arguments
 
 
@@ -501,4 +533,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
