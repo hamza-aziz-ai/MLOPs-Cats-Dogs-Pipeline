@@ -1,6 +1,7 @@
 -r requirements-api.txt
 dvc~=3.67.1
 httpx~=0.28.1
+httpx2~=2.10.0
 jupyter~=1.1.1
 kagglehub~=1.0.2
 matplotlib~=3.11.1

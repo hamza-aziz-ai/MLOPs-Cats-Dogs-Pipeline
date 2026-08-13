@@ -33,6 +33,7 @@ pathspec = "*"
 jupyter = "*"
 pytest = "*"
 pytest-cov = "*"
+httpx2 = "*"
 graphifyy = "*"
 
 [requires]

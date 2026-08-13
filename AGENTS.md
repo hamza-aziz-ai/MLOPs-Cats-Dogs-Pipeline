@@ -7,7 +7,7 @@ too fast to duplicate here.
 
 ## Commands
 
-Everything in this repo runs through **pipenv**, not bare `python`/`pytest`:
+From a normal shell, run project commands through **pipenv**:
 ```
 pipenv run pytest
 pipenv run dvc repro
@@ -15,7 +15,12 @@ pipenv run dvc status
 pipenv run python scripts/train.py ...
 pipenv run jupyter nbconvert --to notebook --execute --inplace notebooks/01_model_development.ipynb
 ```
-The system/bare Python interpreter does not have the project's dependencies.
+
+If the prompt already starts with `(MLOps-Cats-Dogs-Pipeline)`, the Pipenv
+environment is active. Run the inner command directly (`pytest`, `dvc repro`,
+`python scripts/train.py ...`) instead of nesting `pipenv run`; nesting causes
+Pipenv's virtual-environment Courtesy Notice. The system/bare Python
+interpreter outside this environment does not have the project's dependencies.
 
 ## Dependency files — two separate sources of truth, don't unify them
 
