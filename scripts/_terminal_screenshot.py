@@ -27,7 +27,7 @@ TITLE_FG = (139, 148, 158)
 PROMPT_FG = (88, 166, 255)
 
 
-def _load_font() -> ImageFont.FreeTypeFont:
+def _load_font() -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     for candidate in FONT_CANDIDATES:
         if Path(candidate).is_file():
             return ImageFont.truetype(candidate, FONT_SIZE)
@@ -82,7 +82,11 @@ def run_and_render(title: str, command: str, out_path: Path, cwd: str | None = N
     render(title, command, output.strip(), out_path)
 
 
-if __name__ == "__main__":
+def main() -> None:
     # title | command | output_file | actual_shell_command
     title, command, out_file, *shell_parts = sys.argv[1:]
     run_and_render(title, command, Path(out_file), shell_cmd=shell_parts if shell_parts else None)
+
+
+if __name__ == "__main__":
+    main()
