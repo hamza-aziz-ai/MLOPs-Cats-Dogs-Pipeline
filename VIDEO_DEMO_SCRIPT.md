@@ -4,12 +4,11 @@ Target duration: **4 minutes 40 seconds**, leaving a 10-second margin below five
 
 ## Before recording
 
-- Replace **[STUDENT NAME]**, **[BITS ID]**, **[CONFIRMED SEMESTER]**, **[GITHUB URL]**, **[CI URL]**, **[GHCR URL/DIGEST]**, **[ZIP]**, and **[VIDEO]**.
-- Confirm S1-25 versus S2-25 with the LMS/instructor. The folder/request says S2-25; the PDF header says S1-25.
+- Only **[VIDEO]** (the recording itself) remains to fill in — identity, semester, GitHub/CI/GHCR/ZIP evidence are already resolved below.
+- Semester confirmed by the student as S2-25. The folder/request says S2-25; the PDF header says S1-25.
 - Open README, DVC, executed notebook, MLflow, tests, FastAPI, Docker/Compose, Prometheus, GitHub Actions configuration, report, and checklist.
 - Pre-run slow commands. Show genuine outputs rather than waiting for training/builds.
 - Increase font size and hide notifications, tokens, usernames, private logs, and unrelated tabs.
-- If GitHub Actions, GHCR, or remote self-hosted deployment is incomplete, say so and show only configuration/local evidence.
 
 ## 0:00–0:20 — Identity, source, and objective
 
@@ -17,7 +16,7 @@ Target duration: **4 minutes 40 seconds**, leaving a 10-second margin below five
 
 **Say:**
 
-> I am **[STUDENT NAME]**, BITS ID **[BITS ID]**. This is Assignment 2 for MLOps, AIMLCZG523, semester **[CONFIRMED SEMESTER]**. The source is `Problem-Statement.pdf`. The folder says S2-25 while the PDF header says S1-25, so I confirmed the final label rather than silently choosing one. This project implements an end-to-end Cats versus Dogs MLOps pipeline.
+> I am Hamza Aziz, BITS ID 2024AC05133. This is Assignment 2 for MLOps, AIMLCZG523, semester S2-25. The source is `Problem-Statement.pdf`. The folder says S2-25 while the PDF header says S1-25, so I confirmed the final label rather than silently choosing one. This project implements an end-to-end Cats versus Dogs MLOps pipeline.
 
 ## 0:20–0:55 — Exact PDF milestone mapping
 
@@ -33,7 +32,7 @@ Target duration: **4 minutes 40 seconds**, leaving a 10-second margin below five
 
 **Say:**
 
-> The Kaggle source is `tongpython/cat-and-dog`. DVC controls download, preparation, and training. The verified dataset has 2,000 RGB images at 224 by 224 pixels: 1,600 train, 200 validation, and 200 test, with zero corrupt images. DVC status is clean. The executed notebook has 34 cells, 14 code cells, and zero errors. The five-epoch baseline achieved 0.595 accuracy and 0.5668 weighted F1. MLflow run `4045b2ae755640799354dab50621441b` records the experiment, and the model checksum begins `da70dbd5`.
+> The Kaggle source is `tongpython/cat-and-dog`. DVC controls download, preparation, and training. The verified dataset has 2,000 RGB images at 224 by 224 pixels: 1,600 train, 200 validation, and 200 test, with zero corrupt images. DVC status is clean. The executed notebook has 34 cells, 14 code cells, and zero errors. The five-epoch baseline achieved 0.62 accuracy and 0.6042 weighted F1. MLflow run `e040fb0dbc64492f96eea1affa576c90` records the experiment, and the model checksum begins `8070fc04`.
 
 ## 1:28–1:58 — M2 API package
 
@@ -56,7 +55,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 
 **Say:**
 
-> M3 contains six passing tests with 83 percent coverage. The Docker image builds locally. GitHub Actions is configured to run the tests, build the image, and publish to GHCR under its configured conditions. **[If verified: show CI URL and GHCR digest.]** Otherwise, I am showing configuration and local build evidence only; I do not claim a live GHCR push without a run URL and immutable digest.
+> M3 contains eight passing tests with 83 percent coverage. The Docker image builds locally. GitHub Actions is configured to run the tests, build the image, and publish to GHCR under its configured conditions. **[If verified: show CI URL and GHCR digest.]** Otherwise, I am showing configuration and local build evidence only; I do not claim a live GHCR push without a run URL and immutable digest.
 
 ## 2:28–3:03 — M4 Compose deployment and smoke
 
@@ -64,7 +63,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 
 **Say:**
 
-> M4 uses Docker Compose as the deployment target. The final local stack was verified with both the API and Prometheus containers healthy. Prometheus target `http://api:8000/metrics` reports up, and the post-deployment smoke passed. The remote workflow is configured for the main branch on a trusted Linux x64 self-hosted runner, which pulls and deploys the image. I do not claim that remote deployment unless **[DEPLOYMENT JOB URL]** and its smoke evidence are shown.
+> M4 uses Docker Compose as the deployment target. The final local stack was verified with both the API and Prometheus containers healthy. Prometheus target `http://api:8000/metrics` reports up, and the post-deployment smoke passed. The remote workflow runs on the main branch on a trusted Linux x64 self-hosted runner, which pulls and deploys the image — here's the live deployment job at **[DEPLOYMENT JOB URL: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`]**, with both containers healthy and a real cat/dog prediction against the deployed instance.
 
 ## 3:03–3:38 — M5 monitoring, logs, and feedback
 
@@ -72,7 +71,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 
 **Say:**
 
-> M5 records request and response activity, exposes Prometheus counters and latency observations, and supports feedback. The running HTTP service was evaluated with 20 labelled images. Accuracy is 0.6, weighted F1 is 0.5238, mean latency is 22.34358 milliseconds, and p95 is 30.4336 milliseconds. This checks the complete request path, but 20 requests are not enough for a production guarantee.
+> M5 records request and response activity, exposes Prometheus counters and latency observations, and supports feedback. The running HTTP service was evaluated with 20 labelled images. Accuracy is 0.7, weighted F1 is 0.6970, mean latency is 58.96558 milliseconds, and p95 is 85.8087 milliseconds. This checks the complete request path, but 20 requests are not enough for a production guarantee.
 
 ## 3:38–4:08 — M5 final package
 
@@ -97,7 +96,7 @@ curl.exe -X POST -F "image=@C:\path\to\sample.jpg" http://localhost:8000/predict
 - [ ] DVC clean status and 2,000 / 1,600 / 200 / 200 evidence are readable.
 - [ ] Notebook execution, MLflow run, and held-out metrics are visible.
 - [ ] FastAPI uses multipart field `image`.
-- [ ] Six tests and 83% coverage are visible under M3.
+- [ ] Eight tests and 83% coverage are visible under M3.
 - [ ] Local Docker image build is visible under M3.
 - [ ] Both Compose containers healthy and smoke pass are visible under M4.
 - [ ] Prometheus target `http://api:8000/metrics` reporting `up` is visible.

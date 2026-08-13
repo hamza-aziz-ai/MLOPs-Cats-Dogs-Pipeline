@@ -2,22 +2,22 @@
 
 End-to-end MLOps implementation for binary image classification, prepared for BITS Pilani WILP M.Tech. AIML, course **AIMLCZG523**, Assignment 2.
 
-> **Semester label requiring confirmation:** the requested course folder is `MLOps (S2-25_AIMLCZG523)`, while the header inside the supplied `Problem-Statement.pdf` says `S1-25`. The implementation follows the supplied PDF, but the final submission cover page and repository tag must use the semester label confirmed by the instructor/LMS: **[CONFIRM S1-25 OR S2-25]**.
+> **Semester label:** the requested course folder is `MLOps (S2-25_AIMLCZG523)`, while the header inside the supplied `Problem-Statement.pdf` says `S1-25`. Confirmed by the student as **S2-25**; used consistently below.
 
 ## Submission metadata
 
 | Field | Value |
 |---|---|
-| Student name | **[ENTER STUDENT NAME]** |
-| BITS ID | **[ENTER BITS ID]** |
+| Student name | Hamza Aziz |
+| BITS ID | 2024AC05133 |
 | Course | MLOps — AIMLCZG523 |
 | Assignment | Assignment 2 |
-| Semester tag | **[CONFIRM S1-25 OR S2-25]** |
+| Semester tag | S2-25 |
 | Problem statement | `Problem-Statement.pdf` in the Assignment-2 course folder |
-| GitHub repository | **[ENTER GITHUB REPOSITORY URL]** |
-| GitHub Actions run | **[ENTER CI RUN URL AFTER A SUCCESSFUL LIVE RUN]** |
-| GHCR image | **[ENTER GHCR IMAGE URL AND IMMUTABLE DIGEST AFTER PUSH]** |
-| Submission ZIP | **[ENTER SOURCE/CONFIG/MODEL ZIP FILENAME AND SHA-256]** |
+| GitHub repository | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline` |
+| GitHub Actions run | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647` |
+| GHCR image | `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, digest `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697` |
+| Submission ZIP | `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1` |
 
 ## What this repository delivers
 
@@ -42,7 +42,7 @@ flowchart LR
 
 The workflow is parameterized in `params.yaml`, orchestrated by `dvc.yaml`, tracked locally by MLflow, exercised through automated tests, and packaged with Docker. The final local Docker Compose stack was verified with both containers healthy, and the Prometheus target `http://api:8000/metrics` reported `up`.
 
-The GitHub Actions workflow contains CI image-publication and main-branch deployment configuration. Publishing to GHCR and deploying through a remote self-hosted runner remain live submission steps and are not claimed as completed in this local evidence set.
+The GitHub Actions workflow publishes to GHCR and deploys through a remote self-hosted runner — both verified live, see the Submission metadata table above for the run URL and digest.
 
 ## Verified evidence snapshot
 
@@ -52,16 +52,16 @@ The GitHub Actions workflow contains CI image-publication and main-branch deploy
 | Processed dataset | 2,000 images, 224 × 224 RGB, zero corrupt files |
 | Split | 1,600 train / 200 validation / 200 test |
 | Training | Baseline CNN, 5 epochs |
-| Test accuracy | `0.595` |
-| Weighted precision | `0.6283957292` |
-| Weighted recall | `0.595` |
-| Weighted F1 | `0.5668333378` |
-| MLflow run ID | `4045b2ae755640799354dab50621441b` |
-| Model SHA-256 | `da70dbd561c481de897fc11b20c8d07d776aafa343074cacc27a9b421116f4af` |
+| Test accuracy | `0.62` |
+| Weighted precision | `0.6428571429` |
+| Weighted recall | `0.62` |
+| Weighted F1 | `0.6041666667` |
+| MLflow run ID | `e040fb0dbc64492f96eea1affa576c90` |
+| Model SHA-256 | `8070fc046c4e247d30fa0ec469cd2fd22c1205070c9ddde4121ba540bcc0a793` |
 | Deployed evaluation batch | 20 labelled requests |
-| Deployed accuracy / weighted F1 | `0.6` / `0.5238095238` |
-| Serving latency | mean `22.34358 ms`; p95 `30.4336 ms` |
-| Automated tests | 6 passed; 83% coverage |
+| Deployed accuracy / weighted F1 | `0.7` / `0.6969696970` |
+| Serving latency | mean `58.9655750 ms`; p95 `85.8087000 ms` |
+| Automated tests | 8 passed; 83% coverage |
 | Container image | Docker image built locally |
 | Local deployment | Docker Compose API and Prometheus containers both healthy; target `http://api:8000/metrics` is `up`; post-deploy smoke passed |
 | Notebook | 34 cells; 14 code cells executed; 0 error outputs |
@@ -75,9 +75,9 @@ These numbers describe a working baseline, not a state-of-the-art classifier. Th
 |---|---|---|---|
 | **M1 — Model Development & Experiment Tracking** | Git/DVC, baseline model, MLflow | Git-ready source/configuration, `dvc.yaml`, `params.yaml`, download/prepare/train scripts, five-epoch CNN, executed notebook, MLflow run, metrics, plots, checkpoint checksum | Complete locally |
 | **M2 — Model Packaging & Containerization** | FastAPI health and predict endpoints, pinned requirements, Docker/local verification | `src/cats_dogs_mlops/`, `/health`, `/predict`, `requirements-api.txt`, `Dockerfile`, shared preprocessing and checkpoint contract | Complete locally |
-| **M3 — CI Pipeline for Build, Test & Image Creation** | Unit tests, GitHub Actions, Docker build, GHCR publishing | Six tests/83% coverage, `.github/workflows/ci-cd.yml`, verified local image build, GHCR publication configuration | Local tests/build complete; live Actions URL and GHCR digest manual |
-| **M4 — CD Pipeline & Deployment** | Docker Compose target; main-branch self-hosted Linux runner pulls/deploys image; post-deploy smoke | `docker-compose.yml`; main-branch self-hosted Linux deployment job; local two-container healthy stack; local post-deploy smoke | Local Compose deployment complete; live remote runner deployment manual |
-| **M5 — Monitoring, Logs & Final Submission** | Request/response logs, Prometheus counters/latency, feedback and 20-request performance tracking, source/config/model ZIP, video under five minutes | Application logging/metrics, `monitoring/prometheus.yml`, feedback path, post-deployment evaluator/results, report/checklist, 4:40 video script | Monitoring/evaluation/docs complete locally; ZIP, final video, and live screenshots manual |
+| **M3 — CI Pipeline for Build, Test & Image Creation** | Unit tests, GitHub Actions, Docker build, GHCR publishing | Eight tests/83% coverage, `.github/workflows/ci-cd.yml`, verified local image build, live GHCR publication | Complete — live Actions run and GHCR digest verified |
+| **M4 — CD Pipeline & Deployment** | Docker Compose target; main-branch self-hosted Linux runner pulls/deploys image; post-deploy smoke | `docker-compose.yml`; main-branch self-hosted Linux deployment job; live two-container healthy stack; live post-deploy smoke | Complete — live remote runner deployment verified |
+| **M5 — Monitoring, Logs & Final Submission** | Request/response logs, Prometheus counters/latency, feedback and 20-request performance tracking, source/config/model ZIP, video under five minutes | Application logging/metrics, `monitoring/prometheus.yml`, feedback path, post-deployment evaluator/results, report/checklist, 4:40 video script, checksummed ZIP | Complete except final video recording |
 
 ## Repository layout
 
@@ -138,7 +138,7 @@ Inspect the M1 experiment:
 mlflow ui --backend-store-uri file:./mlruns --port 5000
 ```
 
-Open `http://127.0.0.1:5000`, select `cats-vs-dogs-baseline`, and locate run `4045b2ae755640799354dab50621441b`.
+Open `http://127.0.0.1:5000`, select `cats-vs-dogs-baseline`, and locate run `e040fb0dbc64492f96eea1affa576c90`.
 
 ### 3. Run the notebook
 
@@ -154,7 +154,7 @@ The checked notebook uses `RUN_TRAINING = False` and inspects existing canonical
 pytest --cov=cats_dogs_mlops --cov-report=term-missing
 ```
 
-Verified local result: **6 tests passed, 83% coverage**.
+Verified local result: **8 tests passed, 83% coverage**.
 
 ### 5. Verify the M2 FastAPI package locally
 
@@ -192,7 +192,7 @@ With the API and Prometheus running:
 python scripts/post_deployment_evaluation.py --base-url http://localhost:8000
 ```
 
-The verified 20-request batch produced accuracy `0.6`, weighted F1 `0.5238095238`, mean latency `22.34358 ms`, and p95 latency `30.4336 ms`.
+The verified 20-request batch produced accuracy `0.7`, weighted F1 `0.6969696970`, mean latency `58.9655750 ms`, and p95 latency `85.8087000 ms`.
 
 ## M3 CI/GHCR and M4 CD boundary
 
@@ -203,16 +203,16 @@ The verified 20-request batch produced accuracy `0.6`, weighted F1 `0.5238095238
 
 For a real remote run:
 
-1. Push the final repository to GitHub.
-2. Confirm Actions permissions include `contents: read` and `packages: write`.
-3. Run M3 and retain **[CI RUN URL]**.
-4. Verify GHCR and record **[GHCR IMAGE URL]** plus **[IMMUTABLE SHA256 DIGEST]**.
-5. Configure the M4 job only on a trusted Linux x64 self-hosted runner with Docker and Docker Compose installed.
-6. Retain **[DEPLOYMENT JOB URL/SCREENSHOT]** and **[REMOTE HEALTH/SMOKE EVIDENCE]**.
+1. Push the final repository to GitHub. — done: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline`
+2. Confirm Actions permissions include `contents: read` and `packages: write`. — confirmed in `.github/workflows/ci-cd.yml`'s per-job `permissions` blocks.
+3. Run M3 and retain the CI run URL. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647`
+4. Verify GHCR and record the image URL plus immutable digest. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, `sha256:02029143e1931a74b0deb3ac92fae06f2446b54ec00b4b0ba1319f20341ba697`
+5. Configure the M4 job only on a trusted Linux x64 self-hosted runner with Docker and Docker Compose installed. — done: WSL2 Ubuntu 24.04, repo-scoped runner.
+6. Retain the deployment job URL and remote health/smoke evidence. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31689507647/job/94416274227`; remote `/health` returned `{"status":"ready","model_loaded":true}`, remote `/predict` on a real cat image returned `{"label":"cats","confidence":0.582}`.
 
 The M4 job needs a self-hosted Linux runner because Docker Compose must operate on the persistent target host. A GitHub-hosted runner is ephemeral and cannot be treated as that persistent deployment target. Never attach an untrusted self-hosted runner to a public repository or expose secrets in logs.
 
-This local evidence does **not** claim that GitHub Actions published to GHCR or that a remote self-hosted deployment ran. Those links, digest, and screenshots remain explicit submission-time evidence.
+GitHub Actions has published to GHCR and a remote self-hosted deployment has run — see the run/job URLs and digest above. Screenshots remain separate submission-time evidence.
 
 ## M5 monitoring, logs, and final package
 
@@ -220,15 +220,15 @@ The service records request/response activity, exports Prometheus counters and l
 
 The final submission must additionally include:
 
-- **[SOURCE/CONFIG/MODEL ZIP FILENAME AND SHA-256]**
+- Source/config/model ZIP: `cats-dogs-mlops-submission.zip`, sha256 `53a583c3950458d7223fda43871b17818af3b8a1dcb24deac472b6ecafbd9eb1`.
 - **[VIDEO URL OR FILENAME — UNDER FIVE MINUTES]**
-- **[SCREENSHOTS: DVC, MLFLOW, TESTS, IMAGE BUILD, COMPOSE, PROMETHEUS, ACTIONS/GHCR/REMOTE DEPLOY IF COMPLETED]**
+- **[SCREENSHOTS: DVC, MLFLOW, TESTS, IMAGE BUILD, COMPOSE, PROMETHEUS, ACTIONS/GHCR/REMOTE DEPLOY]**
 
 Do not put secrets, the virtual environment, unnecessary raw data, or private runtime logs in the ZIP.
 
 ## Baseline limitations and next improvement
 
-The baseline's test accuracy (`0.595`) and weighted F1 (`0.5668333378`) show that the pipeline works but the scratch CNN is not yet a strong classifier. The best next experiment is transfer learning with a pretrained MobileNetV3 or EfficientNet backbone:
+The baseline's test accuracy (`0.62`) and weighted F1 (`0.6041666667`) show that the pipeline works but the scratch CNN is not yet a strong classifier. The best next experiment is transfer learning with a pretrained MobileNetV3 or EfficientNet backbone:
 
 - freeze the backbone for an initial head-training phase;
 - fine-tune the final blocks at a lower learning rate;
@@ -236,7 +236,9 @@ The baseline's test accuracy (`0.595`) and weighted F1 (`0.5668333378`) show tha
 - compare per-class metrics, calibration, latency, and model size;
 - promote the new checkpoint only if it improves a predeclared acceptance gate.
 
-Other limitations include dataset bias, the closed two-class assumption, lack of out-of-distribution rejection, aggregate metrics hiding class-specific errors, and local rather than hosted CI/CD evidence.
+`notebooks/ResNet-Implementation_COPY.ipynb` implements this repository's own from-scratch ResNet-50 (identity/convolutional blocks, all 5 stages) as a companion exploration, trained on this project's `data/processed` split. It is **not** the transfer-learning improvement above — it's randomly initialized, not pretrained — so it doesn't by itself solve the accuracy gap; genuine transfer learning with pretrained ImageNet weights remains the recommended next step.
+
+Other limitations include dataset bias, the closed two-class assumption, lack of out-of-distribution rejection, and aggregate metrics hiding class-specific errors.
 
 ## Submission documents
 

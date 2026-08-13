@@ -45,6 +45,7 @@ desktop.ini
 .codex/
 .serena/
 graphify-out/
+.playwright-mcp/
 
 # Build outputs
 build/

@@ -59,13 +59,13 @@ stages:
     deps:
     - path: data/processed
       hash: md5
-      md5: 3b0dac87f2a6d3f8f8d26483ac66aa82.dir
-      size: 31252920
+      md5: cc8c1db7e9c86417ebb6f4dc266d8686.dir
+      size: 30935892
       nfiles: 2002
     - path: scripts/train.py
       hash: md5
-      md5: 0875e8cfb8df19588ffcf01bc620e6e3
-      size: 17131
+      md5: 4cb96f950403188748f196581f65c472
+      size: 17523
     - path: src/cats_dogs_mlops/model.py
       hash: md5
       md5: 2777dff2c68ac0e5a7e8a797e44832fb
@@ -90,21 +90,21 @@ stages:
     outs:
     - path: artifacts/confusion_matrix.png
       hash: md5
-      md5: 6b815513b50fd1bd1a49efd7cd73f99c
-      size: 32743
+      md5: d01036ba013369a075e6622d52cd6cd1
+      size: 30154
     - path: artifacts/loss_curves.png
       hash: md5
-      md5: 2738dfd6ea815405d7847687776dcef5
-      size: 86729
+      md5: e01166d0bb90779f3d390e104c31eb63
+      size: 87762
     - path: artifacts/model_metadata.json
       hash: md5
-      md5: ae4e78dd13db938c626b00d8fb8fcd9f
-      size: 506
+      md5: 0b8323efa68885ec5d67970aeeec9076
+      size: 533
     - path: metrics/training_metrics.json
       hash: md5
-      md5: 4467c9b5ee14fa294a1e8669ea506c38
-      size: 1069
+      md5: 5a76ea2f4f99e4d44ccfdbef2723b961
+      size: 1095
     - path: models/cat_dog_cnn.pt
       hash: md5
-      md5: 62e9eebed67ec4672776bb12c4f1e987
-      size: 385597
+      md5: 1c2a23c781c7e568a9226efc9e2b9ee3
+      size: 386322

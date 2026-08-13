@@ -64,10 +64,14 @@ stages:
       - tracking
       - data.seed
     outs:
-      - models/cat_dog_cnn.pt
-      - artifacts/confusion_matrix.png
-      - artifacts/loss_curves.png
-      - artifacts/model_metadata.json
+      - models/cat_dog_cnn.pt:
+          cache: false
+      - artifacts/confusion_matrix.png:
+          cache: false
+      - artifacts/loss_curves.png:
+          cache: false
+      - artifacts/model_metadata.json:
+          cache: false
     metrics:
       - metrics/training_metrics.json:
           cache: false

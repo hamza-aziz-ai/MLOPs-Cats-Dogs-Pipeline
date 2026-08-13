@@ -1,0 +1,14 @@
+artifact_uri: file:D:/PostGraduationProjects/MLOps-Cats-Dogs-Pipeline/mlruns/778441259214907561/e040fb0dbc64492f96eea1affa576c90/artifacts
+end_time: 1786627036092
+entry_point_name: ''
+experiment_id: '778441259214907561'
+lifecycle_stage: active
+run_id: e040fb0dbc64492f96eea1affa576c90
+run_name: baseline-cnn-1.0.0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1786626849766
+status: 3
+tags: []
+user_id: hamza
