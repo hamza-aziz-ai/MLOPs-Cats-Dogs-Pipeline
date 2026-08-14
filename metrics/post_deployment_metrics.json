@@ -4,8 +4,8 @@
   "precision_weighted": 1.0,
   "recall_weighted": 1.0,
   "f1_weighted": 1.0,
-  "mean_network_latency_ms": 54.10458500027744,
-  "p95_network_latency_ms": 94.06000000308268,
+  "mean_network_latency_ms": 76.14528500016604,
+  "p95_network_latency_ms": 121.26080000234651,
   "model_version": "1.0.0",
   "evaluation_source": "deployed_http_api"
 }

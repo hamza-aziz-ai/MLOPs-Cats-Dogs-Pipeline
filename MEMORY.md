@@ -198,9 +198,11 @@ the intended source hunks if the live execution output is also dirty.
    `dev/`, temporary files, and unrelated changes.
 3. Recapture M1 screenshots for the 9,999-image split, current DVC status,
    87/46-cell notebook execution, MLflow run, and 9-test/86%-coverage result.
-4. Rebuild and test Docker locally with the DVC checkpoint (old container/image
-   already removed; a stale prior GHCR build was caught serving 0.62-accuracy
-   predictions before this fix).
+4. ~~Rebuild and test Docker locally~~ — **done**: Compose containers healthy
+   (`cats-dogs-mlops-api-1`, `cats-dogs-mlops-prometheus-1`), `/model/info`
+   sha256 confirmed `9f118d1f...`, `post_deployment_evaluation.py` against the
+   local deployment: 20/20 correct, F1 1.0, mean latency 76.15ms, p95
+   121.26ms.
 5. Push only after an explicit user request. Before the push, register a fresh
    trusted self-hosted Linux runner.
 6. Capture fresh CI/GHCR digest, deployment, health/predict/model-info,
