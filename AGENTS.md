@@ -85,6 +85,24 @@ Both `scripts/train.py` and the notebook use early stopping with
 restores the best validation-accuracy state before test evaluation and final
 checkpoint creation.
 
+## Re-execution and evidence lineage
+
+Treat the DVC/MLflow run and the development-notebook run as separate execution
+lineages even though they use the same architecture and checkpoint path. Record
+their exact metrics, run IDs, epoch counts, and checkpoint hashes in `MEMORY.md`;
+never combine the best value from one run with the checkpoint from the other.
+
+The most recent successful writer owns `models/resnet50_baseline.pt`. If the
+notebook runs after `dvc repro train`, a modified DVC checkpoint output is
+expected. Before Docker, CI, deployment, or submission packaging, explicitly
+choose the final checkpoint lineage and verify it with a fresh hash, inference
+test, and `dvc status`.
+
+After any model re-execution, refresh every evidence-bearing document from the
+verified artefacts. Treat previous screenshots, CI URLs, image digests,
+deployment results, post-deployment metrics, and ZIP checksums as retired until
+they are recaptured for the selected checkpoint.
+
 ## Output ownership and concurrency
 
 - Shared model checkpoint: `models/resnet50_baseline.pt`.
@@ -101,7 +119,7 @@ transient. Do not restore or commit them mid-run.
 The notebook and DVC training share the checkpoint path. Never execute them in
 parallel.
 
-## Dependency files are intentionally separate
+## Dependency files are intentionally separated
 
 - `Pipfile`/`Pipfile.lock`: local CUDA development on Python 3.14, including a
   dedicated PyTorch package index.
@@ -140,7 +158,7 @@ whole notebook after removing or renaming a concept. Do not leave stale Keras,
 bird-dataset, retired-CNN, or migration-diary prose behind.
 
 Notebook source and execution output can be dirty in the same JSON file. When
-only source should be committed, stage the intended source hunks rather than
+only a source should be committed, stage the intended source hunks rather than
 committing every notebook output change.
 
 ## Tests and static warnings
@@ -155,19 +173,18 @@ API corrections, not blanket warning suppression.
 The deployment job uses `runs-on: [self-hosted, linux]`. The previous runner was
 removed. Before the next deployment, register a fresh Linux runner (WSL2 Ubuntu
 on this machine is the established option) using the current commands shown by
-GitHub under **Settings -> Actions -> Runners -> New self-hosted runner**.
+GitHub under **Settings → Actions → Runners → New self-hosted runner**.
 
 On this Windows host, include `--cd ~` in every `wsl` invocation; otherwise
 `wsl.exe` can fail while translating the Windows repository path. Docker
-Desktop supplies the shared Docker daemon. Remove the runner again after final
-deployment/evidence capture.
+Desktop supplies the shared Docker daemon. Remove the runner again after the final deployment / evidence capture.
 
 ## Git discipline
 
 - Make new commits only; never amend or rewrite previous work.
 - Preserve unrelated user changes in a dirty worktree.
 - Commit only the files/hunks belonging to the current request.
-- **Never push unless the user explicitly asks in that specific message.**
+- **Never push unless the user explicitly asks for that specific message.**
 - A push triggers the full CI/CD workflow, so do not infer push authorization
   from an earlier request.
 
@@ -182,4 +199,16 @@ The repository knowledge graph lives under `graphify-out/`.
 - Prefer `graphify-out/wiki/index.md` for broad navigation.
 - Read `GRAPH_REPORT.md` only when scoped queries are insufficient.
 - After code changes, run `graphify update .`. Documentation-only state updates
-  do not require a topology refresh.
+  normally do not require a topology refresh unless the user explicitly asks
+  for one or the documents contain graph-visible evidence changes.
+- After every successful graph refresh, run the repository cleanup script so
+  built-in exception shadow nodes cannot create false cross-file links:
+
+```powershell
+pipenv run python scripts/graphify_clean.py
+```
+
+  Use `python scripts/graphify_clean.py` when the Pipenv environment is already
+  active. The cleaner expects `graphify-out/graph.json` to use the `links`
+  field, reclusters/re-exports only when it removes nodes, and must run after—not
+  before—the Graphify update.

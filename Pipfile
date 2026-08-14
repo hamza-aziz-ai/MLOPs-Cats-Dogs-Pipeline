@@ -10,8 +10,6 @@ name = "downloadpytorch"
 
 [packages]
 cats-dogs-mlops = {editable = true, path = "."}
-torch = {version = "*", index = "downloadpytorch"}
-torchvision = {version = "*", index = "downloadpytorch"}
 numpy = "*"
 pandas = "*"
 scikit-learn = "*"
@@ -28,6 +26,9 @@ dvc = "*"
 prometheus-client = "*"
 pyyaml = "*"
 pathspec = "*"
+tqdm = "*"
+torch = {version = "*", index = "downloadpytorch"}
+torchvision = {version = "*", index = "downloadpytorch"}
 
 [dev-packages]
 jupyter = "*"

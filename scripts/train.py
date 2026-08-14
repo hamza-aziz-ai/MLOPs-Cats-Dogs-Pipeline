@@ -32,6 +32,7 @@ from torch import nn
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
+from tqdm.auto import tqdm
 
 from cats_dogs_mlops.model import checkpoint_sha256, create_model, save_checkpoint
 from cats_dogs_mlops.preprocessing import (
@@ -132,6 +133,8 @@ def run_epoch(
     loss_function: nn.Module,
     device: torch.device,
     optimizer: torch.optim.Optimizer | None = None,
+    *,
+    progress_description: str | None = None,
 ) -> tuple[float, float]:
     """Run one training or validation pass through a dataset.
 
@@ -144,6 +147,7 @@ def run_epoch(
         loss_function: Cross-entropy objective.
         device: CPU or CUDA execution device.
         optimizer: Optional optimizer indicating training mode.
+        progress_description: Label shown on the per-batch progress bar.
 
     Returns:
         tuple[float, float]: Mean sample-weighted loss and accuracy.
@@ -155,7 +159,8 @@ def run_epoch(
     correct_predictions = 0
     sample_count = 0
 
-    for image_batch, target_batch in data_loader:
+    progress_bar = tqdm(data_loader, desc=progress_description, unit="batch", leave=False)
+    for image_batch, target_batch in progress_bar:
         image_batch = image_batch.to(device)
         target_batch = target_batch.to(device)
 
@@ -173,6 +178,10 @@ def run_epoch(
         accumulated_loss += float(loss.item()) * batch_size
         correct_predictions += int((logits.argmax(dim=1) == target_batch).sum().item())
         sample_count += batch_size
+        progress_bar.set_postfix(
+            loss=accumulated_loss / sample_count,
+            accuracy=correct_predictions / sample_count,
+        )
 
     if sample_count == 0:
         raise ValueError("A data loader contained no samples")
@@ -351,18 +360,21 @@ def train(arguments: argparse.Namespace) -> dict[str, Any]:
         stopped_epoch = arguments.epochs
 
         for epoch_index in range(arguments.epochs):
+            epoch_label = f"Epoch {epoch_index + 1}/{arguments.epochs}"
             train_loss, train_accuracy = run_epoch(
                 model,
                 loaders["train"],
                 loss_function,
                 device,
                 optimizer,
+                progress_description=f"{epoch_label} [train]",
             )
             validation_loss, validation_accuracy = run_epoch(
                 model,
                 loaders["validation"],
                 loss_function,
                 device,
+                progress_description=f"{epoch_label} [validation]",
             )
 
             history["train_loss"].append(train_loss)

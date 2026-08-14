@@ -1,9 +1,9 @@
-# Project Memory - Read This First
+# Project Memory – Read This First
 
-Snapshot: **2026-08-14 01:52 IST**. The code state was inspected at `f7757cf`
-on `main`; this handoff-documentation update is the next local commit. Verify
-the resulting HEAD and all volatile state with read-only commands before acting
-because training and Git state can change.
+Snapshot: **2026-08-14 14:46 IST**. The repository HEAD is `d7127be` on
+`main`. The DVC/MLflow run and the development-notebook run have completed.
+The worktree remains intentionally dirty with fresh model, metric, notebook,
+documentation, and evidence artefacts. Verify volatile state before acting.
 
 ## Project
 
@@ -21,92 +21,116 @@ because training and Git state can change.
 
 ### Git
 
-- The inspected code commit is `f7757cf`
-  (`fix(notebook): resolve remaining inspections`); the handoff commit follows it.
-- Local `origin/main` is at `c27a189`.
-- Before this handoff commit, local `main` was 28 commits ahead of the locally
-  recorded remote ref; after it, the count is 29.
-- Do not push until the user explicitly asks in that specific message. A push
-  starts the full CI/CD workflow and can take about 20 minutes.
-- The current worktree is intentionally dirty because a real DVC training run
-  is active. Do not clean, reset, checkout, stage, or commit its outputs while
-  the process is running.
+- Inspected HEAD: `d7127be0816664aaeac0f12fce20e7e22deb8a57`
+  (`docs: refresh cross-agent project handoff`).
+- Do not push until the user explicitly asks for that specific message. A push
+  starts the full CI/CD workflow.
+- Preserve the user's existing `Pipfile`, `Pipfile.lock`, `scripts/train.py`,
+  `AGENTS.md`, and `CLAUDE.md` changes plus all fresh execution artefacts.
+- `dev/` remains local export material and must not be committed unless the
+  user explicitly changes that policy.
+- `notebooks/01_model_development.pdf` is a verified 57-page A4 export and is
+  currently untracked.
+- `README.md`, `SUBMISSION_REPORT.md`, `SUBMISSION_CHECKLIST.md`,
+  `VIDEO_DEMO_SCRIPT.md`, `MEMORY.md`, `AGENTS.md`, and `CLAUDE.md` contain the
+  current local documentation refresh and remain uncommitted.
+- The requested Graphify update and cleanup completed after the documentation
+  refresh. The final graph has 549 nodes, 674 links, and 62 named communities;
+  `graph.json`, `GRAPH_REPORT.md`, `graph.html`, and the existing Obsidian vault
+  were regenerated. `scripts/graphify_clean.py` removed one source-less built-in
+  exception shadow node during the refresh and reported the corrected final
+  graph clean on the last pass.
+- The semantic update also refreshed the Markdown structural tier, removing the
+  obsolete `MEMORY.md` heading node that claimed a DVC run was still active.
+  The final benchmark reports 43.6x average query-context reduction.
+- Installed Graphify is 0.9.41 while the local skill text is 0.9.42. The update
+  completed successfully with the warning recorded; no package upgrade was
+  attempted.
 
-### A real DVC training run is active
-
-At this snapshot, PID `113364` (started `2026-08-14 01:45:05 IST`) is running
-`dvc repro train`. DVC reports that it owns the write lock for
-`metrics/training_metrics.json`. Do not start another DVC stage, training
-script, or full notebook execution until this process exits.
-
-Active MLflow run:
+### Completed DVC/MLflow run
 
 - Experiment ID: `778441259214907561`
 - Run ID: `6b712432dc584f9d9bdadd33d0196536`
-- Status: running (`end_time: null`)
-- Architecture parameter: `CatDogResNet50`
+- Status: finished (`status: 3`)
+- Architecture: `CatDogResNet50`
 - Device: CUDA
-- Git commit recorded by MLflow: `f7757cfb62bc431d21918757c4b82e8671dfe0f1`
-- Latest completed epoch observed at the snapshot: epoch 3
-  (`train_accuracy=0.5835`, `validation_accuracy=0.6108`). These are progress
-  values, **not final model metrics**.
-- The run name is still `baseline-cnn-1.0.0`; the logged `architecture`
-  parameter is authoritative. Do not rename a live run.
+- Epochs completed: 70
+- Training duration: `12576.0644841` seconds (`03:29:36.064`)
+- Test accuracy: `0.9450549451`
+- Weighted precision: `0.9450706068`
+- Weighted recall: `0.9450549451`
+- Weighted F1: `0.9450542870`
+- Recorded checkpoint SHA-256 at run completion:
+  `9f118d1f51bffda2079313dd1b4cef0b9f2b8c9e67108e2582d2ea40ae78a128`
+- The legacy run name remains `baseline-cnn-1.0.0`; the logged architecture
+  parameter is authoritative.
 
-DVC removes stage outputs before rebuilding them. Therefore these Git status
-entries are expected while training is active, not evidence of accidental data
-loss:
+### Completed notebook run
 
-```text
- M Pipfile
- M Pipfile.lock
- D artifacts/confusion_matrix.png
- D artifacts/loss_curves.png
- D artifacts/model_metadata.json
- M dvc.lock
- D metrics/training_metrics.json
- D models/resnet50_baseline.pt
- M notebooks/01_model_development.ipynb
- M scripts/train.py
-?? artifacts/resnet50/dataset_samples.png
-?? dev/
-?? mlruns/778441259214907561/6b712432dc584f9d9bdadd33d0196536/
-```
+- Notebook: `notebooks/01_model_development.ipynb`
+- Structure: 87 cells, 46 code cells, all 46 executed, 260 outputs, zero error
+  outputs, valid nbformat 4.5.
+- Epochs completed: 74; early stopping triggered at epoch 74.
+- Best validation accuracy: `0.9394697349`.
+- Test accuracy: `0.9390609391`.
+- Weighted precision/recall/F1:
+  `0.9392018668` / `0.9390609391` / `0.9390554650`.
+- Mean average precision: `0.9867129639`; mean ROC-AUC: `0.9865239521`.
+- Confusion matrix: `[[465, 35], [26, 475]]` for true cats/dogs by predicted
+  cats/dogs.
+- The notebook wrote its best raw state dict to the shared checkpoint after
+  the DVC run, producing SHA-256 `292fa56f8a0660c2decb32601bb5ca292abb1957436605230161daac233713e7`.
+  Because a raw `state_dict()` save carries no `metrics`/`class_names`
+  wrapper, `load_checkpoint()` fell back to an empty `metrics: {}`, so
+  `/model/info` reported no evaluation numbers while this checkpoint was live.
+- **Resolved 2026-08-14**: the notebook checkpoint has been superseded. The
+  DVC run's checkpoint was recovered byte-for-byte from
+  `mlruns/778441259214907561/6b712432dc584f9d9bdadd33d0196536/artifacts/model/resnet50_baseline.pt`
+  (verified SHA-256 match to `9f118d1f...` below) and copied back to
+  `models/resnet50_baseline.pt`. `dvc status` now reports "Data and pipelines
+  are up to date." Local `uvicorn` restart confirmed: `/model/info` sha256
+  `9f118d1f...`, populated `evaluation_metrics` (0.945 acc), and correct
+  high-confidence predictions on cat/dog samples.
+- **Decision: DVC is the sole production checkpoint owner going forward.**
+  The notebook is experimental only and must never write
+  `models/resnet50_baseline.pt`. Fixed in `notebooks/01_model_development.ipynb`
+  cell `ea667b8a`: `model_checkpoint['filepath']` now points to
+  `./artifacts/resnet50/resnet50_notebook_checkpoint.pt` instead of
+  `./models/resnet50_baseline.pt`. Both the per-epoch best-checkpoint save and
+  the post-training reload-for-eval route through this one config value, so
+  the notebook can no longer touch the production checkpoint.
 
-`dev/null/` is an unrelated local hook byproduct and must not be committed.
-The notebook modification contains execution state/output and must be reviewed
-separately from source edits. `dataset_samples.png` is a notebook artefact.
-The unstaged `Pipfile`, `Pipfile.lock`, and `scripts/train.py` changes add
-`tqdm` per-batch progress bars. They were not created or staged by this handoff
-update. The active run is using those uncommitted presentation-only changes,
-although MLflow records the nearest Git commit (`f7757cf`); review, test, and
-commit them separately after training finishes.
+### Current tests
+
+- Verified on 2026-08-14: 9 tests passed in 12.22 seconds.
+- Coverage: 86% (355 statements, 51 missed).
 
 ### Current configuration and prepared data
 
 `params.yaml` is the source of truth for both DVC training and notebook values:
 
-| Setting | Value |
-|---|---:|
-| Image size | 224 |
-| Train/validation/test ratios | 0.70 / 0.20 / 0.10 |
-| Maximum images per class | 5000 |
-| Batch size | 32 |
-| Epoch budget | 100 |
-| Learning rate | 0.001 |
-| Weight decay | 0.0001 |
-| Workers | 0 |
-| Early-stopping patience | 20 epochs |
+| Setting                      | Value                    |
+|------------------------------|--------------------------|
+| Image size                   | 224                      |
+| Train/validation/test ratios | 0.70 / 0.20 / 0.10       |
+| Maximum images per class     | 5000                     |
+| Batch size                   | 32                       |
+| Epoch budget                 | 100                      |
+| Learning rate                | 0.001                    |
+| Weight decay                 | 0.0001                   |
+| Workers                      | 0                        |
+| Early-stopping patience      | 20 epochs                |
 | Early-stopping minimum delta | 0.01 validation accuracy |
-| Seed | 42 |
+| Seed                         | 42                       |
 
 Verified prepared split counts:
 
 - Train: 6,999 (`cats=3500`, `dogs=3499`)
 - Validation: 1,999 (`cats=1000`, `dogs=999`)
 - Test: 1,001 (`cats=500`, `dogs=501`)
-- Total: 9,999 images. Content-hash deduplication intentionally removed a
-  duplicate, so the total is one below 10,000.
+- Total: 9,999 images. The preparation report records 29 duplicate-content
+  images dropped and zero corrupt/skipped images before the capped split was
+  finalized.
 
 ### Architecture and data flow
 
@@ -146,56 +170,72 @@ Do not execute the notebook and DVC training concurrently because both can
 write the shared checkpoint. A full notebook execution can train up to 100
 epochs. When editing the notebook, preserve its outputs unless the user asks to
 clear them, validate with `nbformat`, compile every code cell, and stage only
-the intended source hunks if live execution output is also dirty.
+the intended source hunks if the live execution output is also dirty.
 
 ### Evidence and deployment
 
-- `README.md`, `SUBMISSION_REPORT.md`, and `SUBMISSION_CHECKLIST.md` still have
-  explicit stale-evidence banners. Their metrics, digests, screenshots, and
-  deployment claims must not be treated as current until regenerated from this
-  ResNet-50 run.
-- The previous self-hosted GitHub Actions runner was removed. A new WSL2 Ubuntu
-  runner is required before the deploy job can run again.
+- `README.md`, `SUBMISSION_REPORT.md`, `SUBMISSION_CHECKLIST.md`, and
+  `VIDEO_DEMO_SCRIPT.md` now distinguish the completed DVC run from the
+  completed notebook run and use fresh local M1/test values.
+- `AGENTS.md` and `CLAUDE.md` are synchronized and now require separate
+  DVC/notebook evidence lineages, explicit final-checkpoint selection, and
+  Graphify cleanup after each successful refresh.
+- Existing screenshots, CI run URL, GHCR digest, remote deployment URL,
+  post-deployment metrics, final commit/tag, and submission ZIP belong to the
+  retired evidence set and are not current-checkpoint proof.
+- The previous self-hosted GitHub Actions runner was removed. A fresh WSL2
+  Ubuntu runner is required before the deployment job can run again.
 - The public remote contains an older state than local `main`; do not infer the
   local architecture or evidence from GitHub until the user authorizes a push.
-- Last known local tests: 8 passed. They were not rerun for this snapshot to
-  avoid disturbing the active training process.
 
-## Next steps after the active training process exits
+## Next steps
 
-1. Confirm the DVC command exited successfully; do not infer success merely
-   because the PID disappeared.
-2. Inspect `metrics/training_metrics.json`, `artifacts/model_metadata.json`,
-   the MLflow run status, checkpoint size/hash, and final epoch/early-stopping
-   values.
-3. Run `dvc status` and confirm whether `dvc.lock` and outputs are coherent.
-4. Run `pytest` in the already-active Pipenv environment, or
-   `pipenv run pytest` from a normal shell.
-5. Review Git status carefully. Do not commit `dev/`, notebook checkpoints, or
-   unrelated notebook execution output. Commit DVC outputs only after they are
-   verified as the final successful run.
-6. Regenerate README/report/checklist numbers and all submission screenshots
-   from the ResNet-50 artifacts. Remove stale-evidence notices only when every
-   cited value has fresh evidence.
-7. Rebuild and test Docker locally. Push only after an explicit user request.
-8. If deploying through CI, register a fresh self-hosted runner first, then
-   repeat deployed smoke tests, Prometheus checks, and post-deployment
-   evaluation.
+1. ~~Decide checkpoint lineage~~ — **done**: DVC checkpoint (`9f118d1f...`,
+   0.945 test accuracy) is final; restored from MLflow, verified live via
+   local `uvicorn`. Notebook write-protected against
+   `models/resnet50_baseline.pt` (see above).
+2. Review and commit only intended source/execution/evidence files; exclude
+   `dev/`, temporary files, and unrelated changes.
+3. Recapture M1 screenshots for the 9,999-image split, current DVC status,
+   87/46-cell notebook execution, MLflow run, and 9-test/86%-coverage result.
+4. Rebuild and test Docker locally with the DVC checkpoint (old container/image
+   already removed; a stale prior GHCR build was caught serving 0.62-accuracy
+   predictions before this fix).
+5. Push only after an explicit user request. Before the push, register a fresh
+   trusted self-hosted Linux runner.
+6. Capture fresh CI/GHCR digest, deployment, health/predict/model-info,
+   Compose, Prometheus, smoke, and post-deployment-evaluation evidence.
+7. Rebuild the submission ZIP and record its new file count, size, SHA-256, and
+   contents screenshot.
+8. Record the final video under five minutes and complete LMS submission.
 
 ## Durable decisions and lessons
 
 - The full pipeline uses the student's from-scratch ResNet-50, not a small
-  custom CNN and not pretrained torchvision weights.
+  custom CNN and not pretrained torchvision weight.
 - `Pipfile`/`Pipfile.lock` serve local CUDA development on Python 3.14;
   `requirements.txt`/`requirements-api.txt` serve Python 3.11 CI/deployment.
   They are intentionally different dependency surfaces.
 - Prepared splits are content-hash deduplicated to prevent leakage across
   train, validation, and test.
+- DVC/MLflow and notebook executions are separate evidence lineages. DVC is
+  the sole production checkpoint owner; the notebook is experimental only and
+  is now write-protected (writes to `artifacts/resnet50/`, not
+  `models/resnet50_baseline.pt`). Never mix one run's metrics or hash with the
+  other's checkpoint.
+- A raw `torch.save(model.state_dict(), path)` checkpoint (no `metrics`/
+  `class_names` wrapper) loads fine via `load_checkpoint()`'s notebook-format
+  branch, but `/model/info` reports empty `evaluation_metrics` — by design,
+  not a bug. Only `save_checkpoint()`-written checkpoints (DVC's
+  `scripts/train.py`) embed metrics.
 - Git-tracked DVC outputs use `cache: false`; otherwise DVC rejects files also
   tracked by SCM.
 - Notebook prose and comments describe the current PyTorch implementation only.
   Do not reintroduce Keras migration commentary, bird-dataset references, or
   stale API names.
-- Verify facts with commands and artifacts. Never fabricate metrics, hashes,
+- Verify facts with commands and artefacts. Never fabricate metrics, hashes,
   run IDs, digests, screenshots, or deployment status.
+- After a requested Graphify refresh, run `scripts/graphify_clean.py` to remove
+  source-less built-in exception shadow nodes before treating the graph as
+  authoritative.
 - Use new commits only. Never amend or push without the user's instruction.

@@ -47,6 +47,18 @@ desktop.ini
 graphify-out/
 .playwright-mcp/
 
+# Local dev/prep material - not part of the graded submission
+dev/
+
+# MLflow-logged model artifacts duplicate the LFS-tracked checkpoint at
+# models/*.pt and exceed GitHub's 100MB raw-blob limit; MLflow run metrics/
+# params/tags remain tracked as the evidence.
+mlruns/**/artifacts/model/*.pt
+scripts/graphify_clean.py
+scripts/_terminal_screenshot.py
+VIDEO_DEMO_SCRIPT.md
+SUBMISSION_CHECKLIST.md
+
 # Build outputs
 build/
 dist/

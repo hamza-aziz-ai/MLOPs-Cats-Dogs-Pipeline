@@ -6,8 +6,8 @@ stages:
     deps:
     - path: scripts/download_data.py
       hash: md5
-      md5: ff767984a9087d21d94f7a04ca0ed68c
-      size: 3119
+      md5: 39dd482f5c9c02da1c48e759eef1b15d
+      size: 3122
     params:
       params.yaml:
         data.dataset_handle: tongpython/cat-and-dog
@@ -15,65 +15,66 @@ stages:
     outs:
     - path: data/raw
       hash: md5
-      md5: 2117d1200409af3628f3e6ba10878671.dir
+      md5: 8dfdb09cef882a17c11ca2d628fb54a5.dir
       size: 228459609
       nfiles: 10033
   prepare:
     cmd: python scripts/prepare_data.py --raw-dir data/raw --output-dir 
-      data/processed --image-size 224 --train-ratio 0.8 --validation-ratio 0.1 
-      --test-ratio 0.1 --max-images-per-class 1000 --seed 42 --overwrite
+      data/processed --image-size 224 --train-ratio 0.7 --validation-ratio 0.2 
+      --test-ratio 0.1 --max-images-per-class 5000 --seed 42 --overwrite
     deps:
     - path: data/raw
       hash: md5
-      md5: 2117d1200409af3628f3e6ba10878671.dir
+      md5: 8dfdb09cef882a17c11ca2d628fb54a5.dir
       size: 228459609
       nfiles: 10033
     - path: scripts/prepare_data.py
       hash: md5
-      md5: 32934779b7699c90eb4d84f2195ea22e
-      size: 12730
+      md5: e8d0d57c23d8e6be65b0dab3ce0b1177
+      size: 12707
     - path: src/cats_dogs_mlops/preprocessing.py
       hash: md5
-      md5: 6d386544d7a200d01aa56dcc2d49fd87
-      size: 4069
+      md5: 5df76298ba5dd2d516336d31a64dfbd3
+      size: 4077
     params:
       params.yaml:
         data.image_size: 224
-        data.max_images_per_class: 1000
+        data.max_images_per_class: 5000
         data.seed: 42
         data.test_ratio: 0.1
-        data.train_ratio: 0.8
-        data.validation_ratio: 0.1
+        data.train_ratio: 0.7
+        data.validation_ratio: 0.2
     outs:
     - path: data/processed
       hash: md5
-      md5: cc8c1db7e9c86417ebb6f4dc266d8686.dir
-      size: 30935892
-      nfiles: 2002
+      md5: 7cdff743c03907fc3b34c666f24b3533.dir
+      size: 155707764
+      nfiles: 10001
   train:
     cmd: python scripts/train.py --data-dir data/processed --model-path 
-      models/cat_dog_cnn.pt --metrics-path metrics/training_metrics.json 
-      --artifacts-dir artifacts --epochs 5 --batch-size 32 --learning-rate 0.001
-      --weight-decay 0.0001 --num-workers 0 --seed 42 --model-version 1.0.0 
-      --tracking-uri file:./mlruns --experiment-name cats-vs-dogs-baseline
+      models/resnet50_baseline.pt --metrics-path metrics/training_metrics.json 
+      --artifacts-dir artifacts --epochs 100 --batch-size 32 --learning-rate 
+      0.001 --weight-decay 0.0001 --num-workers 0 --patience 20 --min-delta 0.01
+      --seed 42 --model-version 1.0.0 --tracking-uri file:./mlruns 
+      --experiment-name cats-vs-dogs-baseline
     deps:
     - path: data/processed
       hash: md5
-      md5: cc8c1db7e9c86417ebb6f4dc266d8686.dir
-      size: 30935892
-      nfiles: 2002
+      md5: 7cdff743c03907fc3b34c666f24b3533.dir
+      size: 155707764
+      nfiles: 10001
     - path: scripts/train.py
       hash: md5
-      md5: 4cb96f950403188748f196581f65c472
-      size: 17523
+      md5: ea153df671c4033dfedad034d6df8b40
+      size: 19933
     - path: src/cats_dogs_mlops/model.py
       hash: md5
-      md5: 2777dff2c68ac0e5a7e8a797e44832fb
-      size: 6234
+      md5: edeb3bfa088748f606b06155849b44da
+      size: 15054
     - path: src/cats_dogs_mlops/preprocessing.py
       hash: md5
-      md5: 6d386544d7a200d01aa56dcc2d49fd87
-      size: 4069
+      md5: 5df76298ba5dd2d516336d31a64dfbd3
+      size: 4077
     params:
       params.yaml:
         data.seed: 42
@@ -82,29 +83,31 @@ stages:
           experiment_name: cats-vs-dogs-baseline
         training:
           batch_size: 32
-          epochs: 5
+          epochs: 100
           learning_rate: 0.001
           weight_decay: 0.0001
           num_workers: 0
+          patience: 20
+          min_delta: 0.01
           model_version: 1.0.0
     outs:
     - path: artifacts/confusion_matrix.png
       hash: md5
-      md5: d01036ba013369a075e6622d52cd6cd1
-      size: 30154
+      md5: 8031add3d7e510e329ac3cbfdb82110b
+      size: 33038
     - path: artifacts/loss_curves.png
       hash: md5
-      md5: e01166d0bb90779f3d390e104c31eb63
-      size: 87762
+      md5: 974bc35218b46ea1c3c1193e04e0453b
+      size: 89269
     - path: artifacts/model_metadata.json
       hash: md5
-      md5: 0b8323efa68885ec5d67970aeeec9076
-      size: 533
+      md5: aacec4640bd23c1112023ebd9560045e
+      size: 560
     - path: metrics/training_metrics.json
       hash: md5
-      md5: 5a76ea2f4f99e4d44ccfdbef2723b961
-      size: 1095
-    - path: models/cat_dog_cnn.pt
+      md5: 6e67c0512bc23384cde9a33880edf68a
+      size: 8348
+    - path: models/resnet50_baseline.pt
       hash: md5
-      md5: 1c2a23c781c7e568a9226efc9e2b9ee3
-      size: 386322
+      md5: 49e0d477561892d2edfee8dbc5997136
+      size: 128043163

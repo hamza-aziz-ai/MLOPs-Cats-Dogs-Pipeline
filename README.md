@@ -1,6 +1,6 @@
 # Cats vs Dogs MLOps Pipeline
 
-> **STALE EVIDENCE NOTICE:** the baseline model was swapped from a small custom CNN to a from-scratch ResNet-50 (`src/cats_dogs_mlops/model.py`, `CatDogResNet50`). Every metric, MLflow run ID, model SHA-256, GHCR digest, and the screenshot below still reflects the retired CNN. Re-run `dvc repro`, rebuild/push the Docker image, redeploy, and rerun the post-deployment evaluation to regenerate real evidence before relying on any number in this file.
+> **Fresh local evidence (2026-08-14):** the DVC/MLflow ResNet-50 run completed and the development notebook was re-executed. The M1 numbers below come directly from the generated JSON/text artefacts. The notebook subsequently wrote its best weights to the shared checkpoint, so `dvc status` now reports that output as modified. A fresh container build, CI/GHCR publish, deployment, post-deployment evaluation, screenshots, and submission ZIP are still required before M3-M5 evidence can be claimed for this checkpoint.
 
 End-to-end MLOps implementation for binary image classification, prepared for BITS Pilani WILP M.Tech. AIML, course **AIMLCZG523**, Assignment 2.
 
@@ -16,19 +16,19 @@ End-to-end MLOps implementation for binary image classification, prepared for BI
 | Assignment         | Assignment 2                                                                                                                                                                        |
 | Semester tag       | S2-25                                                                                                                                                                               |
 | GitHub repository  | https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline                                                                                                                           |
-| GitHub Actions run | https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711                                                                                                  |
-| GHCR image         | https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline, digest `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf` |
+| GitHub Actions run | Refresh required for the current ResNet-50 checkpoint                                                                                                                               |
+| GHCR image         | Refresh required after the current checkpoint is committed and pushed                                                                                                               |
 
 
 ## What this repository delivers
 
-The project turns a small convolutional neural network into a reproducible, testable, containerized service:
+The project turns a from-scratch ResNet-50 image classifier into a reproducible, testable, containerized service:
 
 ```mermaid
 flowchart LR
     A["Kaggle: tongpython/cat-and-dog"] --> B["DVC download and prepare stages"]
-    B --> C["2,000 fingerprinted RGB images"]
-    C --> D["PyTorch CNN training"]
+    B --> C["9,999 deduplicated RGB images"]
+    C --> D["PyTorch ResNet-50 training"]
     D --> E["MLflow metrics and artifacts"]
     E --> F["Versioned model checkpoint"]
     F --> G["FastAPI health and predict endpoints"]
@@ -41,44 +41,42 @@ flowchart LR
     M --> N["Main-branch Linux self-hosted CD runner"]
 ```
 
-The workflow is parameterized in `params.yaml`, orchestrated by `dvc.yaml`, tracked locally by MLflow, exercised through automated tests, and packaged with Docker. The final local Docker Compose stack was verified with both containers healthy, and the Prometheus target `http://api:8000/metrics` reported `up`.
+The workflow is parameterized in `params.yaml`, orchestrated by `dvc.yaml`, tracked locally by MLflow, exercised through automated tests, and packaged with Docker. The last Docker Compose and Prometheus evidence predates the current checkpoint; rebuild and redeploy before treating it as current-model evidence.
 
-The GitHub Actions workflow publishes to GHCR and deploys through a remote self-hosted runner — both verified live, see the Submission metadata table above for the run URL and digest.
+The GitHub Actions workflow can publish to GHCR and deploy through a remote self-hosted runner. Its previous live run proved the workflow path, but a fresh run is required for the current ResNet-50 artefact.
 
 ## Verified evidence snapshot
 
-| Area                            | Verified result                                                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| Dataset source                  | Kaggle handle `tongpython/cat-and-dog`                                                                                        |
-| Processed dataset               | 2,000 images, 224 × 224 RGB, zero corrupt files                                                                               |
-| Split                           | 1,600 train / 200 validation / 200 test                                                                                       |
-| Training                        | Baseline CNN, 5 epochs                                                                                                        |
-| Test accuracy                   | `0.62`                                                                                                                        |
-| Weighted precision              | `0.6428571429`                                                                                                                |
-| Weighted recall                 | `0.62`                                                                                                                        |
-| Weighted F1                     | `0.6041666667`                                                                                                                |
-| MLflow run ID                   | `e040fb0dbc64492f96eea1affa576c90`                                                                                            |
-| Model SHA-256                   | `8070fc046c4e247d30fa0ec469cd2fd22c1205070c9ddde4121ba540bcc0a793`                                                            |
-| Deployed evaluation batch       | 20 labelled requests                                                                                                          |
-| Deployed accuracy / weighted F1 | `0.7` / `0.6969696970`                                                                                                        |
-| Serving latency                 | mean `58.9655750 ms`; p95 `85.8087000 ms`                                                                                     |
-| Automated tests                 | 8 passed; 83% coverage                                                                                                        |
-| Container image                 | Docker image built locally                                                                                                    |
-| Local deployment                | Docker Compose API and Prometheus containers both healthy; target `http://api:8000/metrics` is `up`; post-deploy smoke passed |
-| Notebook                        | 34 cells; 14 code cells executed; 0 error outputs                                                                             |
-| DVC                             | `dvc status` clean                                                                                                            |
+| Area                               | Verified result                                                                                                      |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| Dataset source                     | Kaggle handle `tongpython/cat-and-dog`                                                                               |
+| Processed dataset                  | 9,999 images at 224 × 224 RGB; 29 duplicate-content images dropped; zero corrupt/skipped images                      |
+| Split                              | 6,999 train / 1,999 validation / 1,001 test                                                                          |
+| DVC/MLflow training                | `CatDogResNet50`; 70 epochs; 12,576.0645 seconds (3:29:36.064)                                                        |
+| DVC test accuracy                  | `0.9450549451`                                                                                                       |
+| DVC weighted precision             | `0.9450706068`                                                                                                       |
+| DVC weighted recall                | `0.9450549451`                                                                                                       |
+| DVC weighted F1                    | `0.9450542870`                                                                                                       |
+| MLflow run ID                      | `6b712432dc584f9d9bdadd33d0196536`                                                                                   |
+| DVC checkpoint SHA at run end      | `9f118d1f51bffda2079313dd1b4cef0b9f2b8c9e67108e2582d2ea40ae78a128`                                                   |
+| Executed notebook                  | 87 cells; 46/46 code cells executed; 260 outputs; zero error outputs; valid nbformat 4.5                              |
+| Notebook training/evaluation       | 74 epochs; test accuracy `0.9390609391`; weighted F1 `0.9390554650`; mean ROC-AUC `0.9865239521`                      |
+| Current shared checkpoint SHA      | `292fa56f8a0660c2decb32601bb5ca292abb1957436605230161daac233713e7` (written by the notebook after the DVC run)       |
+| Automated tests                    | 9 passed; 86% coverage (355 statements, 51 missed)                                                                   |
+| Current DVC state                  | `train` output `models/resnet50_baseline.pt` modified by the notebook run                                            |
+| Current container/deployment proof | Refresh required: image, CI/GHCR digest, deployment, post-deployment metrics, screenshots, and ZIP were not rerun yet |
 
-These numbers describe a working baseline, not a state-of-the-art classifier. The moderate test score is reported honestly and motivates transfer learning in the improvement plan.
+The DVC and notebook figures are separate reproducible runs on the same split. They are intentionally reported separately because their checkpoints and test scores differ. Neither result is presented as a production guarantee; transfer learning and broader validation remain in the improvement plan.
 
 ## Exact PDF milestone coverage (M1 – M5)
 
 | PDF milestone                                         | Required scope                                                                                                                                      | Repository evidence                                                                                                                                                           | Status                                               |
 |-------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| **M1 — Model Development & Experiment Tracking**      | Git/DVC, baseline model, MLflow                                                                                                                     | Git-ready source/configuration, `dvc.yaml`, `params.yaml`, download/prepare/train scripts, five-epoch CNN, executed notebook, MLflow run, metrics, plots, checkpoint checksum | Complete locally                                     |
-| **M2 — Model Packaging & Containerization**           | FastAPI health and predict endpoints, pinned requirements, Docker/local verification                                                                | `src/cats_dogs_mlops/`, `/health`, `/predict`, `requirements-api.txt`, `Dockerfile`, shared preprocessing and checkpoint contract                                             | Complete locally                                     |
-| **M3 — CI Pipeline for Build, Test & Image Creation** | Unit tests, GitHub Actions, Docker build, GHCR publishing                                                                                           | Eight tests/83% coverage, `.github/workflows/ci-cd.yml`, verified local image build, live GHCR publication                                                                    | Complete — live Actions run and GHCR digest verified |
-| **M4 — CD Pipeline & Deployment**                     | Docker Compose target; main-branch self-hosted Linux runner pulls/deploys image; post-deploy smoke                                                  | `docker-compose.yml`; main-branch self-hosted Linux deployment job; live two-container healthy stack; live post-deploy smoke                                                  | Complete — live remote runner deployment verified    |
-| **M5 — Monitoring, Logs & Final Submission**          | Request/response logs, Prometheus counters/latency, feedback and 20-request performance tracking, source/config/model ZIP, video under five minutes | Application logging/metrics, `monitoring/prometheus.yml`, feedback path, post-deployment evaluator/results, report/checklist, 4:40 video script, checksummed ZIP              | Complete except final video recording                |
+| **M1 — Model Development & Experiment Tracking**      | Git/DVC, baseline model, MLflow                                                                                                                     | Git-ready source/configuration, `dvc.yaml`, `params.yaml`, download/prepare/train scripts, 70-epoch DVC run, 74-epoch notebook run, MLflow metrics, plots, and checksums      | Complete locally; DVC output modified by notebook    |
+| **M2 — Model Packaging & Containerization**           | FastAPI health and predict endpoints, pinned requirements, Docker/local verification                                                                | `src/cats_dogs_mlops/`, `/health`, `/predict`, `requirements-api.txt`, `Dockerfile`, shared preprocessing/checkpoint contract, current API tests                              | Implementation verified; fresh live API check pending |
+| **M3 — CI Pipeline for Build, Test & Image Creation** | Unit tests, GitHub Actions, Docker build, GHCR publishing                                                                                           | Nine tests/86% coverage and `.github/workflows/ci-cd.yml`; fresh image build/publish pending                                                                                   | Implementation verified; fresh CI/GHCR run pending   |
+| **M4 — CD Pipeline & Deployment**                     | Docker Compose target; main-branch self-hosted Linux runner pulls/deploys image; post-deploy smoke                                                  | `docker-compose.yml` and deployment job configuration; current checkpoint not redeployed                                                                                      | Fresh deployment and smoke evidence pending          |
+| **M5 — Monitoring, Logs & Final Submission**          | Request/response logs, Prometheus counters/latency, feedback and performance tracking, source/config/model ZIP, video under five minutes            | Application logging/metrics, `monitoring/prometheus.yml`, evaluator, updated documents, and 4:40 video script; current-model evaluation/ZIP pending                            | Fresh evaluation, screenshots, ZIP, and video pending |
 
 ## Repository layout
 
@@ -90,7 +88,8 @@ These numbers describe a working baseline, not a state-of-the-art classifier. Th
 ├── metrics/                          # Training and post-deployment metrics
 ├── models/                           # Serialized model checkpoint
 ├── monitoring/prometheus.yml         # M5 Prometheus scrape configuration
-├── notebooks/01_model_development.ipynb
+├── notebooks/01_model_development.ipynb # Executed M1 notebook
+├── notebooks/01_model_development.pdf   # 57-page A4 export of the executed notebook
 ├── runtime/                          # Request feedback output
 ├── scripts/                          # Download, preparation, training, smoke, evaluation
 ├── src/cats_dogs_mlops/              # Model, preprocessing, inference, API, logging
@@ -106,7 +105,8 @@ These numbers describe a working baseline, not a state-of-the-art classifier. Th
 
 ### Prerequisites
 
-- Python 3.11 or 3.12
+- Python 3.14 for the local Pipenv/CUDA environment
+- Python 3.11 for CI and Docker builds from `requirements*.txt`
 - Git
 - DVC
 - Docker Desktop with Docker Compose v2 for container steps
@@ -115,14 +115,11 @@ These numbers describe a working baseline, not a state-of-the-art classifier. Th
 ### 1. Create the environment
 
 ```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-python -m pip install -e .
+pipenv install --dev
+pipenv shell
 ```
 
-Python 3.11 may be used instead of 3.12. Keep one version consistent across local execution, CI, and screenshots.
+The local CUDA environment and the Python 3.11 CI/Docker dependency surface are intentionally separate; do not mechanically merge their lock/requirement files.
 
 ### 2. Reproduce M1 data and model stages
 
@@ -139,7 +136,7 @@ Inspect the M1 experiment:
 mlflow ui --backend-store-uri file:./mlruns --port 5000
 ```
 
-Open `http://127.0.0.1:5000`, select `cats-vs-dogs-baseline`, and locate run `e040fb0dbc64492f96eea1affa576c90`.
+Open `http://127.0.0.1:5000`, select `cats-vs-dogs-baseline`, and locate ResNet-50 run `6b712432dc584f9d9bdadd33d0196536`. Its legacy run name remains `baseline-cnn-1.0.0`; the logged `architecture=CatDogResNet50` parameter is authoritative.
 
 ### 3. Run the notebook
 
@@ -147,7 +144,7 @@ Open `http://127.0.0.1:5000`, select `cats-vs-dogs-baseline`, and locate run `e0
 jupyter nbconvert --execute --to notebook --inplace notebooks\01_model_development.ipynb
 ```
 
-The checked notebook uses `RUN_TRAINING = False` and inspects existing canonical artifacts. Set it to `True` only when deliberately launching a new experiment.
+The checked notebook deliberately uses `RUN_TRAINING = True`. A top-to-bottom execution can train for up to 100 epochs and writes `models/resnet50_baseline.pt`; never run it concurrently with `dvc repro train`.
 
 ### 4. Run M3 tests
 
@@ -155,7 +152,7 @@ The checked notebook uses `RUN_TRAINING = False` and inspects existing canonical
 pytest --cov=cats_dogs_mlops --cov-report=term-missing
 ```
 
-Verified local result: **8 tests passed, 83% coverage**.
+Verified local result on 2026-08-14: **9 tests passed, 86% coverage**.
 
 ### 5. Verify the M2 FastAPI package locally
 
@@ -183,7 +180,7 @@ Invoke-RestMethod http://localhost:8000/health
 docker compose down
 ```
 
-Verified local result: the image built, both Compose containers were healthy, Prometheus reported target `http://api:8000/metrics` as `up`, and the post-deployment smoke passed.
+The previous image/Compose verification predates the current notebook checkpoint. Rebuild the image, start Compose, and rerun health/smoke checks before recording current-model evidence.
 
 ### 7. Run M5 post-deployment performance tracking
 
@@ -193,7 +190,7 @@ With the API and Prometheus running:
 python scripts/post_deployment_evaluation.py --base-url http://localhost:8000
 ```
 
-The verified 20-request batch produced accuracy `0.7`, weighted F1 `0.6969696970`, mean latency `58.9655750 ms`, and p95 latency `85.8087000 ms`.
+`metrics/post_deployment_metrics.json` still contains a historical 20-request result from the retired deployment. Rerun this command after rebuilding and redeploying the current checkpoint; no current-model deployment metric is claimed here yet.
 
 ## M3 CI/GHCR and M4 CD boundary
 
@@ -204,24 +201,24 @@ The verified 20-request batch produced accuracy `0.7`, weighted F1 `0.6969696970
 
 For a real remote run:
 
-1. Push the final repository to GitHub. — done: `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline`
-2. Confirm Actions permissions include `contents: read` and `packages: write`. — confirmed in `.github/workflows/ci-cd.yml`'s per-job `permissions` blocks.
-3. Run M3 and retain the CI run URL. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711`
-4. Verify GHCR and record the image URL plus immutable digest. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/pkgs/container/mlops-cats-dogs-pipeline`, `sha256:8d6f10f8f231fe565944b5b4bd9bddd0a9a946438c879ccc8572d80578e2e0bf`
-5. Configure the M4 job only on a trusted Linux x64 self-hosted runner with Docker and Docker Compose installed. — done: WSL2 Ubuntu 24.04, repo-scoped runner.
-6. Retain the deployment job URL and remote health/smoke evidence. — `https://github.com/hamza-aziz-ai/MLOPs-Cats-Dogs-Pipeline/actions/runs/31706209711/job/94470326140`; remote `/health` returned `{"status":"ready","model_loaded":true}`, remote `/predict` on a real cat image returned `{"label":"cats","confidence":0.582}`.
+1. Commit and push the verified current checkpoint and evidence only when explicitly authorized.
+2. Confirm Actions permissions include `contents: read` and `packages: write`.
+3. Register a fresh trusted Linux x64 self-hosted runner before the deployment job.
+4. Run M3 and retain the new CI run URL.
+5. Verify GHCR and record the new immutable image digest.
+6. Retain the new deployment job URL plus remote health, prediction, Compose, Prometheus, and smoke evidence.
 
 The M4 job needs a self-hosted Linux runner because Docker Compose must operate on the persistent target host. A GitHub-hosted runner is ephemeral and cannot be treated as that persistent deployment target. Never attach an untrusted self-hosted runner to a public repository or expose secrets in logs.
 
-GitHub Actions has published to GHCR, and a remote self-hosted deployment has run — see the run/job URLs and digest above. Screenshots remain separate submission-time evidence.
+An earlier GitHub Actions/GHCR/self-hosted deployment proved the workflow path, but it contains the retired model artefact. New URLs, digest, and screenshots are required for the current ResNet-50 checkpoint.
 
 ## M5 monitoring, logs, and final package
 
-The service records request/response activity, exports Prometheus counters and latency observations, and supports prediction feedback. The final local Compose verification showed both containers healthy and the Prometheus target `http://api:8000/metrics` reporting `up`. The 20-request evaluator measures deployed correctness and latency.
+The service records request/response activity, exports Prometheus counters and latency observations, and supports prediction feedback. The evaluator measures deployed correctness and latency, but the current checkpoint has not yet been rebuilt into the image or re-evaluated through the HTTP service.
 
 The final submission must additionally include:
 
-- Source/config/model ZIP: `cats-dogs-mlops-submission.zip`, sha256 `7ad90ed21ed6696cb90f598a1ec9a6c6fd6675b36e317858648cf54e688dbc4d`.
+- Source/config/model ZIP: rebuild after the fresh artefacts, documents, screenshots, and final commit are ready; record the new filename, size, file count, and SHA-256.
 - **[VIDEO URL OR FILENAME — UNDER FIVE MINUTES]**
 - **[SCREENSHOTS: DVC, MLFLOW, TESTS, IMAGE BUILD, COMPOSE, PROMETHEUS, ACTIONS/GHCR/REMOTE DEPLOY]**
 
@@ -229,7 +226,7 @@ Do not put secrets, the virtual environment, unnecessary raw data, or private ru
 
 ## Baseline limitations and next improvement
 
-The baseline's test accuracy (`0.62`) and weighted F1 (`0.6041666667`) show that the pipeline works, but the scratch CNN is not yet a strong classifier. The best next experiment is transfer learning with a pretrained MobileNetV3 or EfficientNet backbone:
+The DVC run's test accuracy (`0.9450549451`) and weighted F1 (`0.9450542870`), together with the notebook run's test accuracy (`0.9390609391`), show strong held-out performance on this curated two-class split. They do not establish robustness beyond this dataset. The best next experiment is transfer learning with a pretrained MobileNetV3 or EfficientNet backbone:
 
 - freeze the backbone for an initial head-training phase;
 - fine-tune the final blocks at a lower learning rate;
@@ -237,7 +234,7 @@ The baseline's test accuracy (`0.62`) and weighted F1 (`0.6041666667`) show that
 - compare per-class metrics, calibration, latency, and model size;
 - promote the new checkpoint only if it improves a predeclared acceptance gate.
 
-`notebooks/01_model_development.ipynb` implements `CatDogResNet50` from scratch (identity/convolutional blocks, all 5 stages) as the project's actual baseline model, trained on this project's `data/processed` split. It is randomly initialized, not pretrained on ImageNet — genuine transfer learning with pretrained weights remains the recommended next step, not this notebook itself.
+`notebooks/01_model_development.ipynb` implements `CatDogResNet50` from scratch (a stem plus four residual stages containing 16 bottleneck blocks) as the project's actual baseline model, trained on this project's `data/processed` split. It is randomly initialized, not pretrained on ImageNet — genuine transfer learning with pretrained weights remains the recommended next step, not this notebook itself.
 
 Other limitations include dataset bias, the closed two-class assumption, lack of out-of-distribution rejection, and aggregate metrics hiding class-specific errors.
 
